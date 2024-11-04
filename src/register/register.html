@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - Nex</title>
+    <link rel="icon" href="../images/logo.png" type="image/icon type" />
+    <link
+      rel="stylesheet"
+      data-purpose="Layout StyleSheet"
+      title="Web Awesome"
+      href="/css/app-wa-3b124ff0e0d7a67cd8c995d0aeb1d15a.css?vsn=d"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-duotone-solid.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-thin.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-solid.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-regular.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-light.css"
+    />
+
+    <link rel="stylesheet" href="../utils/main.css" />
+    <link rel="stylesheet" href="register.css" />
+  </head>
+  <body>
+    <div class="container-content">
+      <div class="container-register">
+        <div class="left">
+          <img src="../images/logo.png" alt="Logo" width="60px" />
+        </div>
+        <form action="" class="register-form" autocomplete="off">
+          <h4>Registrar no <span>NEX</span></h4>
+          <p>Bem vindo! Preencha os dados para criar sua conta.</p>
+
+          <!-- Nome -->
+          <div class="floating-label">
+            <input
+              placeholder="Nome"
+              type="text"
+              name="nome"
+              id="nome"
+              autocomplete="off"
+            />
+            <label for="nome">Nome:</label>
+            <div class="icon">
+              <i class="fa-thin fa-user"></i>
+            </div>
+          </div>
+
+          <!-- Cargo -->
+          <div class="floating-label">
+            <select name="cargo" id="cargo">
+              <option value="" disabled selected hidden>Cargo</option>
+              <option value="Auxiliar">Auxiliar</option>
+              <option value="Analista">Analista</option>
+              <option value="Líder">Líder</option>
+              <option value="Coordenador">Coordenador</option>
+            </select>
+            <label for="cargo">Cargo:</label>
+            <div class="icon">
+              <i class="fa-thin fa-user-tie"></i>
+            </div>
+          </div>
+
+          <!-- Setor -->
+          <div class="floating-label">
+            <select name="setor" id="setor">
+              <option value="" disabled selected hidden>Setor</option>
+              <option value="Contábil">Contábil</option>
+              <option value="Fiscal">Fiscal</option>
+              <option value="RH">RH</option>
+              <option value="Express">Express</option>
+            </select>
+            <label for="setor">Setor:</label>
+            <div class="icon">
+              <i class="fa-thin fa-building"></i>
+            </div>
+          </div>
+
+          <!-- Segmento -->
+          <div class="floating-label">
+            <select name="segmento" id="segmento">
+              <option value="" disabled selected hidden>Segmento</option>
+              <option value="Comércio">Comércio</option>
+              <option value="Supermercado">Supermercado</option>
+              <option value="Indústria">Indústria</option>
+              <option value="Express">Express</option>
+            </select>
+            <label for="segmento">Segmento:</label>
+            <div class="icon">
+              <i class="fa-thin fa-network-wired"></i>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="floating-label">
+            <input
+              placeholder="Email"
+              type="email"
+              name="email"
+              id="email"
+              autocomplete="off"
+            />
+            <label for="email">Email:</label>
+            <div class="icon">
+              <i class="fa-thin fa-envelope"></i>
+            </div>
+          </div>
+
+          <!-- Senha -->
+          <div class="floating-label">
+            <input
+              placeholder="Senha"
+              type="password"
+              name="senha"
+              id="senha"
+              autocomplete="off"
+            />
+            <label for="senha">Senha:</label>
+            <div class="icon">
+              <i class="fa-thin fa-lock"></i>
+            </div>
+          </div>
+
+          <!-- Botão de Registro -->
+          <button type="submit">Registrar</button>
+          <a href="../login/login.html" class="discrete">Fazer Login</a>
+        </form>
+      </div>
+    </div>
+
+    <script src="register.js"></script>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+.dashboard-container {
+   display: grid;
+   padding: 20px;
+   padding-left: 30px;
+   padding-right: 30px;
+   gap: 20px;
+   background-color: whitesmoke;
+}
+
+.row {
+   display: grid;
+   gap: 20px;
+}
+
+.one-column {
+   grid-template-columns: repeat(1, 1fr);
+}
+
+.two-columns {
+   grid-template-columns: repeat(2, 1fr);
+}
+
+.three-columns {
+   grid-template-columns: repeat(3, 1fr);
+}
+
+.dashboard-card {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 20px;
+   font-size: 1.1rem;
+   text-align: center;
+   min-height: 400px;
+   height: calc(50vh - 55px);
+   background-color: white;
+   border-radius: 15px;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+   transition: transform 0.3s;
+}
+
+.dashboard-card:hover {
+   transform: scale(1.01);
+}
+
+.card-content {
+   width: 90%;
+   padding: 20px;
+}
+
+.welcome-content {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 20px;
+}
+.today-content,
+.month-content,
+.progress-content {
+   display: flex;
+   flex-direction: row;
+   gap: 30px;
+   align-items: center;
+}
+
+.welcome-content img {
+   width: 150px;
+   height: 150px;
+}
+
+.message {
+   width: 50%;
+}
+
+.welcome-message {
+   width: 100%;
+}
+
+.chart {
+   width: 50%;
+}
+
+.message p {
+   margin: 0;
+   font-size: 22px;
+   font-weight: 500;
+}
+
+.message p span {
+   font-weight: 700;
+   font-size: 24px;
+   color: #6700ff;
+}
+
+.message .caption {
+   color: #666;
+   font-size: 16px;
+   margin-top: 8px;
+}
+
+canvas {
+   width: 80% !important;
+   max-width: 350px !important;
+   height: auto !important;
+   padding: 10px;
+}
+
+@media (max-width: 950px) {
+   .row {
+      grid-template-columns: 1fr;
+   }
+
+   .dashboard-card {
+      min-height: 400px;
+      height: calc(50vh - 55px);
+   }
+
+   .message p {
+      font-size: 22px;
+   }
+
+   .message p span {
+      font-size: 24px;
+   }
+
+   .message .caption {
+      font-size: 16px;
+   }
+}
+
+@media (min-width: 950px) and (max-width: 1368px) {
+   .message p {
+      font-size: 18px;
+   }
+
+   .message p span {
+      font-size: 20px;
+   }
+
+   .message .caption {
+      font-size: 12px;
+   }
+}

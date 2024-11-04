@@ -1,0 +1,19 @@
+{
+  "name": "cronograma",
+  "version": "1.0.0",
+  "main": "backend/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^33.0.1"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.5.0"
+  }
+}

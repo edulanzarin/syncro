@@ -1,0 +1,192 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+   font-family: "Poppins", sans-serif;
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
+   border: 0;
+   text-decoration: none;
+   list-style-type: none;
+   outline: none;
+}
+
+*::-webkit-scrollbar {
+   width: 8px;
+   height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+   background: inherit;
+}
+
+*::-webkit-scrollbar-thumb {
+   background-color: lightgray;
+   border-radius: 10px;
+   border: 2px solid #f0f0f0;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+   background-color: rgb(180, 180, 180);
+}
+
+html,
+body {
+   height: 100%;
+   width: 100%;
+   background-color: whitesmoke;
+   font-size: 14px;
+   overflow-x: hidden;
+   user-select: none;
+}
+
+@keyframes gradientAnimation {
+   0% {
+      background-position: 0% 50%;
+   }
+   50% {
+      background-position: 100% 50%;
+   }
+   100% {
+      background-position: 0% 50%;
+   }
+}
+
+header {
+   width: 100%;
+   height: 50px;
+   display: flex;
+   justify-content: space-between;
+   color: white;
+   padding: 10px;
+   padding-left: 20px;
+   padding-right: 20px;
+   position: fixed;
+   top: 0;
+   left: 0;
+   z-index: 1100;
+   background: linear-gradient(45deg, #6700ff, #8e44ad, #9b59b6, #5f27cd);
+   background-size: 300% 300%;
+   animation: gradientAnimation 15s ease infinite;
+}
+
+header .info-header {
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
+   gap: 5px;
+   font-weight: 600;
+}
+
+header .icons-header {
+   gap: 15px;
+}
+
+header .info-header img,
+header .info-header .menu-header img {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+}
+
+header .info-header .menu-header {
+   position: relative;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+header .info-header .menu-header i {
+   font-size: 20px;
+   padding: 10px;
+}
+
+header .info-header .menu-header i:hover {
+   cursor: pointer;
+   border-radius: 5px;
+   background-color: rgba(128, 128, 128, 0.4);
+}
+
+header .info-header .menu-header img {
+   transition: transform 0.3s;
+}
+
+header .info-header .menu-header img:hover {
+   cursor: pointer;
+   transform: scale(1.1);
+   transition: transform 0.3s;
+}
+
+header .info-header .menu-header span {
+   background-color: #6700ff;
+   display: none;
+   position: absolute;
+   top: 47px;
+   padding: 5px;
+   border-radius: 5px;
+   font-size: 10px;
+   font-weight: 600;
+}
+
+header .info-header .menu-header:hover span {
+   display: block;
+}
+
+header .info-header #notification #notification-sign {
+   content: "";
+   position: absolute;
+   width: 5px;
+   height: 5px;
+   border-radius: 50%;
+   left: 10px;
+   top: 10px;
+   background-color: salmon;
+}
+
+main {
+   width: 100vw;
+   min-height: 100vh;
+   padding-top: 50px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.notification {
+   position: fixed;
+   right: 10px;
+   color: #333;
+   font-size: 1rem;
+   font-weight: 500;
+   padding: 15px;
+   border-radius: 5px;
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+   z-index: 1000;
+   width: 300px;
+   height: auto;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   transition: opacity 0.5s ease;
+}
+
+.loading-modal {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: linear-gradient(45deg, #6700ff, #8e44ad, #9b59b6, #5f27cd);
+   background-size: 300% 300%;
+   animation: gradientAnimation 15s ease infinite;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 1051;
+}
+
+.loading-content {
+   text-align: center;
+   color: white;
+   font-weight: 600;
+}
