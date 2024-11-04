@@ -45,6 +45,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.invoke("obter_tarefas_usuario_dia_atual", id_usuario),
    obterTarefasEquipe: (id_usuario) =>
       ipcRenderer.invoke("obter_tarefas_equipe", id_usuario),
+   obterTarefasEquipeDiaAtual: (id_usuario) =>
+      ipcRenderer.invoke("obter_tarefas_equipe_dia_atual", id_usuario),
+   obterTarefasAuxiliaresEquipe: (id_usuario) =>
+      ipcRenderer.invoke("obter_tarefas_auxiliares_equipe", id_usuario),
+   obterTarefasAnalistasEquipe: (id_usuario) =>
+      ipcRenderer.invoke("obter_tarefas_analistas_equipe", id_usuario),
    verificarTarefasAtrasadas: (id_usuario) =>
       ipcRenderer.invoke("verificar_tarefas_atrasadas", id_usuario),
    registrarAlteracaoTarefa: (id_tarefa, status_novo) =>

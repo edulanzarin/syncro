@@ -37,11 +37,6 @@
    background-color: white;
    border-radius: 15px;
    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-   transition: transform 0.3s;
-}
-
-.dashboard-card:hover {
-   transform: scale(1.01);
 }
 
 .card-content {
@@ -57,7 +52,11 @@
 }
 .today-content,
 .month-content,
-.progress-content {
+.progress-content,
+.today-team-content,
+.month-team-content,
+.auxiliares-team-content,
+.analistas-team-content {
    display: flex;
    flex-direction: row;
    gap: 30px;
@@ -79,6 +78,12 @@
 
 .chart {
    width: 50%;
+   transition: transform 0.3s;
+}
+
+.chart:hover {
+   transform: scale(1.1);
+   transition: transform 0.3s;
 }
 
 .message p {
@@ -104,6 +109,25 @@ canvas {
    max-width: 350px !important;
    height: auto !important;
    padding: 10px;
+}
+
+.responsavel-select {
+   background-color: #f8f8f8;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   padding: 5px;
+   font-size: 14px;
+   color: #333;
+   cursor: pointer;
+   transition: border-color 0.3s ease;
+   width: 100%;
+   max-width: 300px;
+   margin-top: 20px;
+}
+
+.responsavel-select:focus {
+   border-color: #6700ff;
+   outline: none;
 }
 
 @media (max-width: 950px) {

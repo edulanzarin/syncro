@@ -335,72 +335,334 @@ def obter_tarefas_usuario_dia_atual(id_usuario):
 
 # Função para obter as tarefas da equipe de um usuário
 def obter_tarefas_equipe(id_usuario):
-    connection = conectar_db()
-    cursor = connection.cursor()
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor e segmento do usuário
+        query_obter_usuario = "SELECT setor, segmento FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor e segmento do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor, segmento = usuario
+        
+        query_obter_equipe = """
+        SELECT id FROM usuarios 
+        WHERE setor = ? AND segmento = ?;
+        """
+        cursor.execute(query_obter_equipe, (setor, segmento))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário encontrado na mesma equipe."
+            return response  
+        
+        ids_equipe = [usuario[0] for usuario in usuarios_da_equipe]
+        
+        placeholders = ','.join('?' * len(ids_equipe))
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6]
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
     
-    # Query para obter o setor e segmento do usuário
-    query_obter_usuario = "SELECT setor, segmento FROM usuarios WHERE id = ?;"
-    cursor.execute(query_obter_usuario, (id_usuario,))
-    
-    # Obter o setor e segmento do usuário
-    usuario = cursor.fetchone()
-    if not usuario:
-        return {
+    except Exception as e:
+        response = {
             "success": False,
-            "message": "Usuário não encontrado."
+            "message": str(e)  
         }
     
-    setor, segmento = usuario
-    
-    # Query para obter os IDs dos usuários da mesma equipe
-    query_obter_equipe = """
-    SELECT id FROM usuarios 
-    WHERE setor = ? AND segmento = ?;
-    """
-    cursor.execute(query_obter_equipe, (setor, segmento))
-    usuarios_da_equipe = cursor.fetchall()
-    
-    if not usuarios_da_equipe:
-        return {
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response 
+
+# Função para obter as tarefas da equipe de um usuário para o dia atual
+def obter_tarefas_equipe_dia_atual(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+
+        # Data atual no formato AAAA-MM-DD
+        data_atual = datetime.now().strftime('%Y-%m-%d')
+
+        # Query para obter o setor e segmento do usuário
+        query_obter_usuario = "SELECT setor, segmento FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+
+        # Obter o setor e segmento do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+
+        setor, segmento = usuario
+
+        # Query para obter os IDs dos usuários da mesma equipe
+        query_obter_equipe = """
+        SELECT id FROM usuarios 
+        WHERE setor = ? AND segmento = ?;
+        """
+        cursor.execute(query_obter_equipe, (setor, segmento))
+        usuarios_da_equipe = cursor.fetchall()
+
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário encontrado na mesma equipe."
+            return response  
+
+        ids_equipe = [usuario[0] for usuario in usuarios_da_equipe]
+
+        placeholders = ','.join('?' * len(ids_equipe))
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders})
+        AND (t.prazo = ? OR (t.prazo < ? AND t.status = 'Atrasada'));
+        """
+        
+        # Executar a consulta com os IDs da equipe e a data atual
+        cursor.execute(query_obter_tarefas, (*ids_equipe, data_atual, data_atual))
+
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6]
+            }
+            for tarefa in tarefas
+        ]
+
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+
+    except Exception as e:
+        response = {
             "success": False,
-            "message": "Nenhum usuário encontrado na mesma equipe."
+            "message": str(e)  
+        }
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas da equipe de usuários com cargo "Auxiliar"
+def obter_tarefas_auxiliares_equipe(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor e segmento do usuário
+        query_obter_usuario = "SELECT setor, segmento FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor e segmento do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor, segmento = usuario
+        
+        # Query para obter os usuários com cargo "Auxiliar" na mesma equipe
+        query_obter_equipe_auxiliares = """
+        SELECT id, nome FROM usuarios 
+        WHERE setor = ? AND segmento = ? AND cargo = 'Auxiliar';
+        """
+        cursor.execute(query_obter_equipe_auxiliares, (setor, segmento))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Auxiliar' encontrado na mesma equipe."
+            return response  
+        
+        ids_equipe_auxiliares = [usuario[0] for usuario in usuarios_da_equipe]
+        nomes_equipe_auxiliares = {usuario[0]: usuario[1] for usuario in usuarios_da_equipe}  # Dicionário com id como chave e nome como valor
+
+        placeholders = ','.join('?' * len(ids_equipe_auxiliares))
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_auxiliares)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7],  # ID do responsável
+                    "nome": nomes_equipe_auxiliares[tarefa[7]]  # Nome do responsável
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
         }
     
-    # Criar uma lista de IDs de usuários da equipe
-    ids_equipe = [usuario[0] for usuario in usuarios_da_equipe]
-    
-    # Query para obter as tarefas de todos os usuários da equipe
-    query_obter_tarefas = """
-    SELECT * FROM tarefas 
-    WHERE id_usuario IN ({});
-    """.format(','.join('?' * len(ids_equipe)))  # Cria placeholders para os IDs
-    
-    cursor.execute(query_obter_tarefas, ids_equipe)
-    
-    # Obter todas as tarefas e formatá-las como uma lista de dicionários
-    tarefas = cursor.fetchall()
-    tarefas_list = []
-    
-    for tarefa in tarefas:
-        tarefa_data = {
-            "id": tarefa[0],
-            "titulo": tarefa[1],
-            "descricao": tarefa[2],
-            "prazo": tarefa[3],
-            "status": tarefa[4],
-            "id_usuario": tarefa[5]
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
         }
-        tarefas_list.append(tarefa_data)
     
-    cursor.close()
-    connection.close()
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas da equipe de usuários com cargo "Analista"
+def obter_tarefas_analistas_equipe(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor e segmento do usuário
+        query_obter_usuario = "SELECT setor, segmento FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor e segmento do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor, segmento = usuario
+        
+        # Query para obter os usuários com cargo "Analista" na mesma equipe
+        query_obter_equipe_analistas = """
+        SELECT id, nome FROM usuarios 
+        WHERE setor = ? AND segmento = ? AND cargo = 'Analista';
+        """
+        cursor.execute(query_obter_equipe_analistas, (setor, segmento))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Analista' encontrado na mesma equipe."
+            return response  
+        
+        ids_equipe_analistas = [usuario[0] for usuario in usuarios_da_equipe]
+        nomes_equipe_analistas = {usuario[0]: usuario[1] for usuario in usuarios_da_equipe}  # Dicionário com id como chave e nome como valor
+
+        placeholders = ','.join('?' * len(ids_equipe_analistas))
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_analistas)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7], 
+                    "nome": nomes_equipe_analistas[tarefa[7]]  
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
     
-    result = {
-        "success": True,
-        "tarefas": tarefas_list
-    }
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
     
-    return result
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
 
 # Função para verificar tarefas atrasadas
 def verificar_tarefas_atrasadas(id_usuario):
@@ -541,6 +803,18 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'obter_tarefas_equipe':
         id_usuario = int(sys.argv[2])
         result = obter_tarefas_equipe(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == "obter_tarefas_equipe_dia_atual":
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_equipe_dia_atual(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_auxiliares_equipe':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_auxiliares_equipe(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_analistas_equipe':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_analistas_equipe(id_usuario)
         print(json.dumps(result))
     elif sys.argv[1] == 'verificar_tarefas_atrasadas':
         id_usuario = int(sys.argv[2])
