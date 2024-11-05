@@ -143,6 +143,29 @@ header .info-header #notification #notification-sign {
    background-color: salmon;
 }
 
+.logout-button {
+   position: fixed;
+   bottom: 20px;
+   right: 20px;
+   background-color: #ff4757;
+   color: white;
+   border: none;
+   border-radius: 50%;
+   width: 30px;
+   height: 30px;
+   font-size: 16px;
+   cursor: pointer;
+   transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+   background-color: #ff6b81;
+}
+
+.logout-button:focus {
+   outline: none;
+}
+
 main {
    width: 100vw;
    min-height: 100vh;

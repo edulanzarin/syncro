@@ -1,6 +1,10 @@
 // Obter userId do localStorage
 const userId = localStorage.getItem("userId");
 
+if (!userId) {
+   window.location.href = "../login/login.html";
+}
+
 // Função para fazer as verificações e carregar os dados do usuário
 const carregarDadosUsuario = async () => {
    let userInfo;
@@ -68,6 +72,11 @@ const redirectSql = () => {
 
 // Chame a função para ativar o redirecionamento
 redirectSql();
+
+document.querySelector(".logout-button").addEventListener("click", function () {
+   localStorage.clear();
+   window.location.href = "../login/login.html";
+});
 
 // URLs dos GIFs de sucesso e erro
 const successGifUrl = "../images/success.gif";

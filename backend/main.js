@@ -464,6 +464,80 @@ ipcMain.handle("obter_tarefas_analistas_equipe", async (event, id_usuario) => {
    });
 });
 
+// Função para obter tarefas da equipe
+ipcMain.handle("obter_tarefas_setor", async (event, id_usuario) => {
+   return new Promise((resolve, reject) => {
+      const pythonProcess = execFile("python3", [
+         path.join(__dirname, "main.py"),
+         "obter_tarefas_setor",
+         id_usuario,
+      ]);
+
+      let output = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+         output += data.toString();
+         console.log(
+            "Dados recebidos do Python (obter_tarefas_setor):",
+            data.toString()
+         );
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+         reject(`Erro ao obter tarefas do setor: ${data}`);
+      });
+
+      pythonProcess.on("close", (code) => {
+         if (code !== 0) {
+            return reject(`O processo Python saiu com o código: ${code}`);
+         }
+         try {
+            const result = JSON.parse(output.trim());
+            resolve(result);
+         } catch (error) {
+            reject(`Erro ao analisar a resposta: ${error}`);
+         }
+      });
+   });
+});
+
+// Função para obter tarefas da equipe
+ipcMain.handle("obter_tarefas_setor_dia_atual", async (event, id_usuario) => {
+   return new Promise((resolve, reject) => {
+      const pythonProcess = execFile("python3", [
+         path.join(__dirname, "main.py"),
+         "obter_tarefas_setor_dia_atual",
+         id_usuario,
+      ]);
+
+      let output = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+         output += data.toString();
+         console.log(
+            "Dados recebidos do Python (obter_tarefas_setor_dia_atual):",
+            data.toString()
+         );
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+         reject(`Erro ao obter tarefas do setor: ${data}`);
+      });
+
+      pythonProcess.on("close", (code) => {
+         if (code !== 0) {
+            return reject(`O processo Python saiu com o código: ${code}`);
+         }
+         try {
+            const result = JSON.parse(output.trim());
+            resolve(result);
+         } catch (error) {
+            reject(`Erro ao analisar a resposta: ${error}`);
+         }
+      });
+   });
+});
+
 // Função para verificar tarefas atrasadas
 ipcMain.handle("verificar_tarefas_atrasadas", async (event, id_usuario) => {
    return new Promise((resolve, reject) => {

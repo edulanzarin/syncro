@@ -1,4 +1,5 @@
 .dashboard-container {
+   width: 100%;
    display: grid;
    padding: 20px;
    padding-left: 30px;
@@ -33,6 +34,7 @@
    font-size: 1.1rem;
    text-align: center;
    min-height: 400px;
+   width: 100%;
    height: calc(50vh - 55px);
    background-color: white;
    border-radius: 15px;
@@ -40,8 +42,9 @@
 }
 
 .card-content {
-   width: 90%;
-   padding: 20px;
+   width: 100%;
+   padding: 10px;
+   position: relative;
 }
 
 .welcome-content {
@@ -50,16 +53,21 @@
    align-items: center;
    gap: 20px;
 }
+
 .today-content,
 .month-content,
 .progress-content,
 .today-team-content,
 .month-team-content,
 .auxiliares-team-content,
-.analistas-team-content {
+.analistas-team-content,
+.setor-content,
+.comercio-content,
+.supermercado-content,
+.industria-content {
    display: flex;
-   flex-direction: row;
-   gap: 30px;
+   flex-direction: column;
+   gap: 0;
    align-items: center;
 }
 
@@ -68,40 +76,53 @@
    height: 150px;
 }
 
-.message {
-   width: 50%;
-}
-
-.welcome-message {
+.container-chart {
    width: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
 }
 
 .chart {
-   width: 50%;
-   transition: transform 0.3s;
+   width: 100%;
 }
 
-.chart:hover {
-   transform: scale(1.1);
-   transition: transform 0.3s;
+.message {
+   width: 100%;
 }
 
 .message p {
    margin: 0;
-   font-size: 22px;
+   font-size: 18px;
    font-weight: 500;
 }
 
 .message p span {
    font-weight: 700;
-   font-size: 24px;
+   font-size: 20px;
    color: #6700ff;
 }
 
 .message .caption {
    color: #666;
-   font-size: 16px;
-   margin-top: 8px;
+   font-size: 12px;
+}
+
+.welcome-message p {
+   margin: 0;
+   font-size: 24px;
+   font-weight: 500;
+}
+
+.welcome-message p span {
+   font-weight: 700;
+   font-size: 26px;
+   color: #6700ff;
+}
+
+.welcome-message .caption {
+   color: #666;
+   font-size: 18px;
 }
 
 canvas {
@@ -111,26 +132,7 @@ canvas {
    padding: 10px;
 }
 
-.responsavel-select {
-   background-color: #f8f8f8;
-   border: 1px solid #ccc;
-   border-radius: 5px;
-   padding: 5px;
-   font-size: 14px;
-   color: #333;
-   cursor: pointer;
-   transition: border-color 0.3s ease;
-   width: 100%;
-   max-width: 300px;
-   margin-top: 20px;
-}
-
-.responsavel-select:focus {
-   border-color: #6700ff;
-   outline: none;
-}
-
-@media (max-width: 950px) {
+@media (max-width: 1130px) {
    .row {
       grid-template-columns: 1fr;
    }
@@ -139,30 +141,7 @@ canvas {
       min-height: 400px;
       height: calc(50vh - 55px);
    }
-
-   .message p {
-      font-size: 22px;
-   }
-
-   .message p span {
-      font-size: 24px;
-   }
-
-   .message .caption {
-      font-size: 16px;
-   }
 }
 
-@media (min-width: 950px) and (max-width: 1368px) {
-   .message p {
-      font-size: 18px;
-   }
-
-   .message p span {
-      font-size: 20px;
-   }
-
-   .message .caption {
-      font-size: 12px;
-   }
+@media (min-width: 1110px) and (max-width: 1368px) {
 }

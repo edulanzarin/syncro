@@ -664,6 +664,153 @@ def obter_tarefas_analistas_equipe(id_usuario):
         
     return response
 
+# Função para obter as tarefas de usuários do mesmo setor
+def obter_tarefas_setor(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor = usuario[0]
+        
+        query_obter_equipe = "SELECT id FROM usuarios WHERE setor = ?;"
+        cursor.execute(query_obter_equipe, (setor,))
+        usuarios_do_setor = cursor.fetchall()
+        
+        if not usuarios_do_setor:
+            response["message"] = "Nenhum usuário encontrado no mesmo setor."
+            return response  
+        
+        ids_setor = [usuario[0] for usuario in usuarios_do_setor]
+        
+        placeholders = ','.join('?' * len(ids_setor))
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_setor)
+        
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6]
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+    
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas do setor para o dia atual
+def obter_tarefas_setor_dia_atual(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+
+        data_atual = datetime.now().strftime('%Y-%m-%d')
+
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+
+        setor = usuario[0]
+
+        query_obter_setor = "SELECT id FROM usuarios WHERE setor = ?;"
+        cursor.execute(query_obter_setor, (setor,))
+        usuarios_do_setor = cursor.fetchall()
+
+        if not usuarios_do_setor:
+            response["message"] = "Nenhum usuário encontrado no mesmo setor."
+            return response  
+
+        ids_setor = [usuario[0] for usuario in usuarios_do_setor]
+
+        placeholders = ','.join('?' * len(ids_setor))
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders})
+        AND (t.prazo = ? OR (t.prazo < ? AND t.status = 'Atrasada'));
+        """
+        
+        cursor.execute(query_obter_tarefas, (*ids_setor, data_atual, data_atual))
+
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5]
+            }
+            for tarefa in tarefas
+        ]
+
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
 # Função para verificar tarefas atrasadas
 def verificar_tarefas_atrasadas(id_usuario):
     response = {"success": False, "message": "Erro inesperado."}
@@ -815,6 +962,14 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'obter_tarefas_analistas_equipe':
         id_usuario = int(sys.argv[2])
         result = obter_tarefas_analistas_equipe(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_setor':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_setor(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == "obter_tarefas_setor_dia_atual":
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_setor_dia_atual(id_usuario)
         print(json.dumps(result))
     elif sys.argv[1] == 'verificar_tarefas_atrasadas':
         id_usuario = int(sys.argv[2])
