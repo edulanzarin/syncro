@@ -192,6 +192,36 @@ function createDashboard(dashboardType, data) {
       </div>
    `;
 
+   const auxiliaresComercioContent = `
+      <div class="card-content auxiliares-comercio-content">
+         <div class="message">
+            <p>Visão geral dos <span>Auxiliares</span> do <span id="setorNome">Comércio</span></p>
+         </div>
+         <div class="container-chart">
+            <canvas id="auxiliaresComercioChart" class="chart"></canvas>
+         </div>
+         <div class="no-chart-message" style="display:none;">
+            <p>Não há tarefas do setor para o mês.</p>
+            <img src="../images/empty.gif" alt="Sem tarefas" />
+         </div>
+      </div>
+   `;
+
+   const analistasComercioContent = `
+      <div class="card-content analistas-comercio-content">
+         <div class="message">
+            <p>Visão geral dos <span>Analistas</span> do <span id="setorNome">Comércio</span></p>
+         </div>
+         <div class="container-chart">
+            <canvas id="analistasComercioChart" class="chart"></canvas>
+         </div>
+         <div class="no-chart-message" style="display:none;">
+            <p>Não há tarefas do setor para o mês.</p>
+            <img src="../images/empty.gif" alt="Sem tarefas" />
+         </div>
+      </div>
+   `;
+
    const supermercadoContent = `
       <div class="card-content supermercado-content">
          <div class="message">
@@ -207,6 +237,36 @@ function createDashboard(dashboardType, data) {
       </div>
    `;
 
+   const auxiliaresSupermercadoContent = `
+      <div class="card-content auxiliares-supermercado-content">
+         <div class="message">
+            <p>Visão geral dos <span>Auxiliares</span> do <span id="setorNome">Supermercado</span></p>
+         </div>
+         <div class="container-chart">
+            <canvas id="auxiliaresSupermercadoChart" class="chart"></canvas>
+         </div>
+         <div class="no-chart-message" style="display:none;">
+            <p>Não há tarefas do setor para o mês.</p>
+            <img src="../images/empty.gif" alt="Sem tarefas" />
+         </div>
+      </div>
+   `;
+
+   const analistasSupermercadoContent = `
+      <div class="card-content analistas-supermercado-content">
+         <div class="message">
+            <p>Visão geral dos <span>Analistas</span> do <span id="setorNome">Supermercado</span></p>
+         </div>
+         <div class="container-chart">
+            <canvas id="analistasSupermercadoChart" class="chart"></canvas>
+         </div>
+         <div class="no-chart-message" style="display:none;">
+            <p>Não há tarefas do setor para o mês.</p>
+            <img src="../images/empty.gif" alt="Sem tarefas" />
+         </div>
+      </div>
+   `;
+
    const industriaContent = `
       <div class="card-content industria-content">
          <div class="message">
@@ -214,6 +274,36 @@ function createDashboard(dashboardType, data) {
          </div>
          <div class="container-chart">
             <canvas id="industriaChart" class="chart"></canvas>
+         </div>
+         <div class="no-chart-message" style="display:none;">
+            <p>Não há tarefas do setor para o mês.</p>
+            <img src="../images/empty.gif" alt="Sem tarefas" />
+         </div>
+      </div>
+   `;
+
+   const auxiliaresIndustriaContent = `
+      <div class="card-content auxiliares-industria-content">
+         <div class="message">
+            <p>Visão geral dos <span>Auxiliares</span> da <span id="setorNome">Indústria</span></p>
+         </div>
+         <div class="container-chart">
+            <canvas id="auxiliaresIndustriaChart" class="chart"></canvas>
+         </div>
+         <div class="no-chart-message" style="display:none;">
+            <p>Não há tarefas do setor para o mês.</p>
+            <img src="../images/empty.gif" alt="Sem tarefas" />
+         </div>
+      </div>
+   `;
+
+   const analistasIndustriaContent = `
+      <div class="card-content analistas-industria-content">
+         <div class="message">
+            <p>Visão geral dos <span>Analistas</span> da <span id="setorNome">Indústria</span></p>
+         </div>
+         <div class="container-chart">
+            <canvas id="analistasIndustriaChart" class="chart"></canvas>
          </div>
          <div class="no-chart-message" style="display:none;">
             <p>Não há tarefas do setor para o mês.</p>
@@ -283,17 +373,23 @@ function createDashboard(dashboardType, data) {
                <div class="dashboard-card month-card">${monthContent}</div>
                <div class="dashboard-card progress-card">${progressContent}</div>
             </div>
-            <div class="row two-columns">
-               <div class="dashboard-card today-team-card">${todayTeamContent}</div>
-               <div class="dashboard-card month-team-card">${monthTeamContent}</div>
+            <div class="row one-column">
+               <div class="dashboard-card setor-card">${setorContent}</div>
             </div>
             <div class="row three-columns">
                <div class="dashboard-card comercio-card">${comercioContent}</div>
+               <div class="dashboard-card supermercado-card">${auxiliaresComercioContent}</div>
+               <div class="dashboard-card industria-card">${analistasComercioContent}</div>
+            </div>
+            <div class="row three-columns">
                <div class="dashboard-card supermercado-card">${supermercadoContent}</div>
+               <div class="dashboard-card supermercado-card">${auxiliaresSupermercadoContent}</div>
+               <div class="dashboard-card supermercado-card">${analistasSupermercadoContent}</div>
+            </div>
+            <div class="row three-columns">
                <div class="dashboard-card industria-card">${industriaContent}</div>
-               </div>
-            <div class="row one-column">
-               <div class="dashboard-card setor-card">${setorContent}</div>
+               <div class="dashboard-card industria-card">${auxiliaresIndustriaContent}</div>
+               <div class="dashboard-card industria-card">${analistasIndustriaContent}</div>
             </div>
         `;
          break;
@@ -901,7 +997,7 @@ async function preencherGraficoTarefasAuxiliaresMesAtual() {
                ],
             };
 
-            // Criação do gráfico
+            // Criação do gráfico com o mesmo estilo dos outros
             window.auxiliaresChartInstance = new Chart(ctx, {
                type: "bar",
                data: chartData,
@@ -1488,6 +1584,749 @@ async function preencherGraficoIndustriaMesAtual() {
    }
 }
 
+async function preencherGraficoTarefasAuxiliaresComercio() {
+   const tarefasConcluidas = {};
+   const tarefasTotal = {};
+
+   try {
+      const resultado = await window.electronAPI.obterTarefasAuxiliaresComercio(
+         userId
+      );
+      console.log(
+         "Resultado do servidor (tarefas auxiliares comércio):",
+         resultado
+      );
+
+      if (resultado.success && Array.isArray(resultado.tarefas)) {
+         // Filtra as tarefas pelo setor e segmento "Comércio"
+         const tarefasComercio = resultado.tarefas.filter(
+            (tarefa) => tarefa.segmento === "Comércio"
+         );
+         console.log("Tarefas filtradas (segmento Comércio):", tarefasComercio);
+
+         if (tarefasComercio.length === 0) {
+            console.log("Nenhuma tarefa encontrada com segmento 'Comércio'.");
+         }
+
+         tarefasComercio.forEach((tarefa) => {
+            const responsavel = tarefa.responsavel;
+            const responsavelId = responsavel.id;
+            const nomeResponsavelFormatado = formatarNome(responsavel);
+
+            // Inicializa contadores para cada auxiliar
+            if (!tarefasTotal[responsavelId]) {
+               tarefasTotal[responsavelId] = {
+                  nome: nomeResponsavelFormatado,
+                  count: 0,
+               };
+               tarefasConcluidas[responsavelId] = 0;
+            }
+
+            // Conta as tarefas totais e as concluídas por auxiliar
+            tarefasTotal[responsavelId].count++;
+            if (tarefa.status === "Concluída") {
+               tarefasConcluidas[responsavelId]++;
+            }
+         });
+
+         console.log("Tarefas totais por auxiliar:", tarefasTotal);
+         console.log("Tarefas concluídas por auxiliar:", tarefasConcluidas);
+
+         const auxiliaresComercioContent = document.getElementById(
+            "auxiliaresComercioChart"
+         );
+         const noChartMessage = document.querySelector(".no-chart-message");
+
+         // Verifica se há tarefas para exibir
+         if (tarefasComercio.length === 0) {
+            auxiliaresComercioContent.style.display = "none";
+            noChartMessage.style.display = "block";
+            return;
+         } else {
+            auxiliaresComercioContent.style.display = "block";
+            noChartMessage.style.display = "none";
+
+            const ctx = auxiliaresComercioContent.getContext("2d");
+            const nomesAuxiliares = Object.values(tarefasTotal).map(
+               (auxiliar) => auxiliar.nome
+            );
+            const dadosTarefasTotal = Object.values(tarefasTotal).map(
+               (auxiliar) => auxiliar.count
+            );
+            const dadosTarefasConcluidas = Object.values(tarefasConcluidas);
+
+            console.log("Nomes auxiliares:", nomesAuxiliares);
+            console.log("Dados tarefas totais:", dadosTarefasTotal);
+            console.log("Dados tarefas concluídas:", dadosTarefasConcluidas);
+
+            // Configuração dos dados do gráfico
+            const chartData = {
+               labels: nomesAuxiliares,
+               datasets: [
+                  {
+                     label: "Total de Tarefas",
+                     data: dadosTarefasTotal,
+                     backgroundColor: "lightgray",
+                  },
+                  {
+                     label: "Tarefas Concluídas",
+                     data: dadosTarefasConcluidas,
+                     backgroundColor: "green",
+                  },
+               ],
+            };
+
+            // Criação do gráfico
+            window.auxiliaresChartInstance = new Chart(ctx, {
+               type: "bar",
+               data: chartData,
+               options: {
+                  responsive: true,
+                  indexAxis: "y",
+                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  elements: { bar: { barThickness: 20 } },
+                  plugins: {
+                     legend: {
+                        position: "top",
+                        labels: { font: { size: 14, weight: "bold" } },
+                     },
+                     tooltip: {
+                        callbacks: {
+                           label: function (tooltipItem) {
+                              const datasetLabel = tooltipItem.dataset.label;
+                              const taskCount = tooltipItem.raw;
+                              return datasetLabel === "Total de Tarefas"
+                                 ? `Total de Tarefas: ${taskCount}`
+                                 : `Tarefas Concluídas: ${taskCount}`;
+                           },
+                        },
+                     },
+                  },
+               },
+            });
+         }
+      } else {
+         console.error("Dados de tarefas dos auxiliares inválidos:", resultado);
+      }
+   } catch (error) {
+      console.error(
+         "Erro ao preencher gráfico de tarefas dos auxiliares:",
+         error
+      );
+   }
+}
+
+// Função para o gráfico das tarefas dos analistas do setor no segmento "Comércio"
+async function preencherGraficoTarefasAnalistasComercio() {
+   const tarefasConcluidas = {};
+   const tarefasTotal = {};
+
+   try {
+      const resultado = await window.electronAPI.obterTarefasAnalistasComercio(
+         userId
+      );
+      console.log("resultado analistas comércio:", resultado);
+
+      if (resultado.success && Array.isArray(resultado.tarefas)) {
+         // Filtra as tarefas pelo setor, segmento "Comércio" e cargo "Analista"
+         const tarefasComercio = resultado.tarefas.filter(
+            (tarefa) =>
+               tarefa.segmento === "Comércio" &&
+               tarefa.responsavel.cargo === "Analista"
+         );
+
+         tarefasComercio.forEach((tarefa) => {
+            const responsavel = tarefa.responsavel;
+            const responsavelId = responsavel.id;
+            const nomeResponsavelFormatado = formatarNome(responsavel);
+
+            // Inicializa contadores para cada analista
+            if (!tarefasTotal[responsavelId]) {
+               tarefasTotal[responsavelId] = {
+                  nome: nomeResponsavelFormatado,
+                  count: 0,
+               };
+               tarefasConcluidas[responsavelId] = 0;
+            }
+
+            // Conta as tarefas totais e as concluídas por analista
+            tarefasTotal[responsavelId].count++;
+            if (tarefa.status === "Concluída") {
+               tarefasConcluidas[responsavelId]++;
+            }
+         });
+
+         const analistasComercioContent = document.getElementById(
+            "analistasComercioChart"
+         );
+         const noChartMessage = document.querySelector(".no-chart-message");
+
+         // Verifica se há tarefas para exibir
+         if (tarefasComercio.length === 0) {
+            analistasComercioContent.style.display = "none";
+            noChartMessage.style.display = "block";
+            return;
+         } else {
+            analistasComercioContent.style.display = "block";
+            noChartMessage.style.display = "none";
+
+            const ctx = analistasComercioContent.getContext("2d");
+            const nomesAnalistas = Object.values(tarefasTotal).map(
+               (analista) => analista.nome
+            );
+            const dadosTarefasTotal = Object.values(tarefasTotal).map(
+               (analista) => analista.count
+            );
+            const dadosTarefasConcluidas = Object.values(tarefasConcluidas);
+
+            // Configuração dos dados do gráfico
+            const chartData = {
+               labels: nomesAnalistas,
+               datasets: [
+                  {
+                     label: "Total de Tarefas",
+                     data: dadosTarefasTotal,
+                     backgroundColor: "lightgray",
+                  },
+                  {
+                     label: "Tarefas Concluídas",
+                     data: dadosTarefasConcluidas,
+                     backgroundColor: "green",
+                  },
+               ],
+            };
+
+            // Criação do gráfico
+            window.analistasComercioChartInstance = new Chart(ctx, {
+               type: "bar",
+               data: chartData,
+               options: {
+                  responsive: true,
+                  indexAxis: "y",
+                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  elements: { bar: { barThickness: 20 } },
+                  plugins: {
+                     legend: {
+                        position: "top",
+                        labels: { font: { size: 14, weight: "bold" } },
+                     },
+                     tooltip: {
+                        callbacks: {
+                           label: function (tooltipItem) {
+                              const datasetLabel = tooltipItem.dataset.label;
+                              const taskCount = tooltipItem.raw;
+                              return datasetLabel === "Total de Tarefas"
+                                 ? `Total de Tarefas: ${taskCount}`
+                                 : `Tarefas Concluídas: ${taskCount}`;
+                           },
+                        },
+                     },
+                  },
+               },
+            });
+         }
+      } else {
+         console.error("Dados de tarefas dos analistas inválidos:", resultado);
+      }
+   } catch (error) {
+      console.error(
+         "Erro ao preencher gráfico de tarefas dos analistas:",
+         error
+      );
+   }
+}
+
+// Função para o gráfico das tarefas dos auxiliares do setor no segmento "Supermercado"
+async function preencherGraficoTarefasAuxiliaresSupermercado() {
+   const tarefasConcluidas = {};
+   const tarefasTotal = {};
+
+   try {
+      const resultado =
+         await window.electronAPI.obterTarefasAuxiliaresSupermercado(userId);
+      console.log("resultado auxiliares supermercado:", resultado);
+
+      if (resultado.success && Array.isArray(resultado.tarefas)) {
+         // Filtra as tarefas pelo setor, segmento "Supermercado" e cargo "Auxiliar"
+         const tarefasSupermercado = resultado.tarefas.filter(
+            (tarefa) =>
+               tarefa.segmento === "Supermercado" &&
+               tarefa.responsavel.cargo === "Auxiliar"
+         );
+
+         tarefasSupermercado.forEach((tarefa) => {
+            const responsavel = tarefa.responsavel;
+            const responsavelId = responsavel.id;
+            const nomeResponsavelFormatado = formatarNome(responsavel);
+
+            // Inicializa contadores para cada auxiliar
+            if (!tarefasTotal[responsavelId]) {
+               tarefasTotal[responsavelId] = {
+                  nome: nomeResponsavelFormatado,
+                  count: 0,
+               };
+               tarefasConcluidas[responsavelId] = 0;
+            }
+
+            // Conta as tarefas totais e as concluídas por auxiliar
+            tarefasTotal[responsavelId].count++;
+            if (tarefa.status === "Concluída") {
+               tarefasConcluidas[responsavelId]++;
+            }
+         });
+
+         const auxiliaresSupermercadoContent = document.getElementById(
+            "auxiliaresSupermercadoChart"
+         );
+         const noChartMessage = document.querySelector(".no-chart-message");
+
+         // Verifica se há tarefas para exibir
+         if (tarefasSupermercado.length === 0) {
+            auxiliaresSupermercadoContent.style.display = "none";
+            noChartMessage.style.display = "block";
+            return;
+         } else {
+            auxiliaresSupermercadoContent.style.display = "block";
+            noChartMessage.style.display = "none";
+
+            const ctx = auxiliaresSupermercadoContent.getContext("2d");
+            const nomesAuxiliares = Object.values(tarefasTotal).map(
+               (auxiliar) => auxiliar.nome
+            );
+            const dadosTarefasTotal = Object.values(tarefasTotal).map(
+               (auxiliar) => auxiliar.count
+            );
+            const dadosTarefasConcluidas = Object.values(tarefasConcluidas);
+
+            // Configuração dos dados do gráfico
+            const chartData = {
+               labels: nomesAuxiliares,
+               datasets: [
+                  {
+                     label: "Total de Tarefas",
+                     data: dadosTarefasTotal,
+                     backgroundColor: "lightgray",
+                  },
+                  {
+                     label: "Tarefas Concluídas",
+                     data: dadosTarefasConcluidas,
+                     backgroundColor: "green",
+                  },
+               ],
+            };
+
+            // Criação do gráfico
+            window.auxiliaresChartInstance = new Chart(ctx, {
+               type: "bar",
+               data: chartData,
+               options: {
+                  responsive: true,
+                  indexAxis: "y",
+                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  elements: { bar: { barThickness: 20 } },
+                  plugins: {
+                     legend: {
+                        position: "top",
+                        labels: { font: { size: 14, weight: "bold" } },
+                     },
+                     tooltip: {
+                        callbacks: {
+                           label: function (tooltipItem) {
+                              const datasetLabel = tooltipItem.dataset.label;
+                              const taskCount = tooltipItem.raw;
+                              return datasetLabel === "Total de Tarefas"
+                                 ? `Total de Tarefas: ${taskCount}`
+                                 : `Tarefas Concluídas: ${taskCount}`;
+                           },
+                        },
+                     },
+                  },
+               },
+            });
+         }
+      } else {
+         console.error("Dados de tarefas dos auxiliares inválidos:", resultado);
+      }
+   } catch (error) {
+      console.error(
+         "Erro ao preencher gráfico de tarefas dos auxiliares:",
+         error
+      );
+   }
+}
+
+// Função para o gráfico das tarefas dos analistas do setor no segmento "Supermercado"
+async function preencherGraficoTarefasAnalistasSupermercado() {
+   const tarefasConcluidas = {};
+   const tarefasTotal = {};
+
+   try {
+      const resultado =
+         await window.electronAPI.obterTarefasAnalistasSupermercado(userId);
+      console.log("resultado analistas supermercado:", resultado);
+
+      if (resultado.success && Array.isArray(resultado.tarefas)) {
+         // Filtra as tarefas pelo setor, segmento "Supermercado" e cargo "Analista"
+         const tarefasSupermercado = resultado.tarefas.filter(
+            (tarefa) =>
+               tarefa.segmento === "Supermercado" &&
+               tarefa.responsavel.cargo === "Analista"
+         );
+
+         tarefasSupermercado.forEach((tarefa) => {
+            const responsavel = tarefa.responsavel;
+            const responsavelId = responsavel.id;
+            const nomeResponsavelFormatado = formatarNome(responsavel);
+
+            // Inicializa contadores para cada analista
+            if (!tarefasTotal[responsavelId]) {
+               tarefasTotal[responsavelId] = {
+                  nome: nomeResponsavelFormatado,
+                  count: 0,
+               };
+               tarefasConcluidas[responsavelId] = 0;
+            }
+
+            // Conta as tarefas totais e as concluídas por analista
+            tarefasTotal[responsavelId].count++;
+            if (tarefa.status === "Concluída") {
+               tarefasConcluidas[responsavelId]++;
+            }
+         });
+
+         const analistasSupermercadoContent = document.getElementById(
+            "analistasSupermercadoChart"
+         );
+         const noChartMessage = document.querySelector(".no-chart-message");
+
+         // Verifica se há tarefas para exibir
+         if (tarefasSupermercado.length === 0) {
+            analistasSupermercadoContent.style.display = "none";
+            noChartMessage.style.display = "block";
+            return;
+         } else {
+            analistasSupermercadoContent.style.display = "block";
+            noChartMessage.style.display = "none";
+
+            const ctx = analistasSupermercadoContent.getContext("2d");
+            const nomesAnalistas = Object.values(tarefasTotal).map(
+               (analista) => analista.nome
+            );
+            const dadosTarefasTotal = Object.values(tarefasTotal).map(
+               (analista) => analista.count
+            );
+            const dadosTarefasConcluidas = Object.values(tarefasConcluidas);
+
+            // Configuração dos dados do gráfico
+            const chartData = {
+               labels: nomesAnalistas,
+               datasets: [
+                  {
+                     label: "Total de Tarefas",
+                     data: dadosTarefasTotal,
+                     backgroundColor: "lightgray",
+                  },
+                  {
+                     label: "Tarefas Concluídas",
+                     data: dadosTarefasConcluidas,
+                     backgroundColor: "green",
+                  },
+               ],
+            };
+
+            // Criação do gráfico
+            window.analistasChartInstance = new Chart(ctx, {
+               type: "bar",
+               data: chartData,
+               options: {
+                  responsive: true,
+                  indexAxis: "y",
+                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  elements: { bar: { barThickness: 20 } },
+                  plugins: {
+                     legend: {
+                        position: "top",
+                        labels: { font: { size: 14, weight: "bold" } },
+                     },
+                     tooltip: {
+                        callbacks: {
+                           label: function (tooltipItem) {
+                              const datasetLabel = tooltipItem.dataset.label;
+                              const taskCount = tooltipItem.raw;
+                              return datasetLabel === "Total de Tarefas"
+                                 ? `Total de Tarefas: ${taskCount}`
+                                 : `Tarefas Concluídas: ${taskCount}`;
+                           },
+                        },
+                     },
+                  },
+               },
+            });
+         }
+      } else {
+         console.error("Dados de tarefas dos analistas inválidos:", resultado);
+      }
+   } catch (error) {
+      console.error(
+         "Erro ao preencher gráfico de tarefas dos analistas:",
+         error
+      );
+   }
+}
+
+// Função para o gráfico das tarefas dos auxiliares do setor no segmento "Indústria"
+async function preencherGraficoTarefasAuxiliaresIndustria() {
+   const tarefasConcluidas = {};
+   const tarefasTotal = {};
+
+   try {
+      const resultado =
+         await window.electronAPI.obterTarefasAuxiliaresIndustria(userId);
+      console.log("resultado auxiliares indústria:", resultado);
+
+      if (resultado.success && Array.isArray(resultado.tarefas)) {
+         // Filtra as tarefas pelo setor e segmento "Indústria"
+         const tarefasIndustria = resultado.tarefas.filter(
+            (tarefa) => tarefa.segmento === "Indústria"
+         );
+
+         tarefasIndustria.forEach((tarefa) => {
+            const responsavel = tarefa.responsavel;
+            const responsavelId = responsavel.id;
+            const nomeResponsavelFormatado = formatarNome(responsavel);
+
+            // Inicializa contadores para cada auxiliar
+            if (!tarefasTotal[responsavelId]) {
+               tarefasTotal[responsavelId] = {
+                  nome: nomeResponsavelFormatado,
+                  count: 0,
+               };
+               tarefasConcluidas[responsavelId] = 0;
+            }
+
+            // Conta as tarefas totais e as concluídas por auxiliar
+            tarefasTotal[responsavelId].count++;
+            if (tarefa.status === "Concluída") {
+               tarefasConcluidas[responsavelId]++;
+            }
+         });
+
+         const auxiliaresIndustriaContent = document.getElementById(
+            "auxiliaresIndustriaChart"
+         );
+         const noChartMessage = document.querySelector(".no-chart-message");
+
+         // Verifica se há tarefas para exibir
+         if (tarefasIndustria.length === 0) {
+            auxiliaresIndustriaContent.style.display = "none";
+            noChartMessage.style.display = "block";
+            return;
+         } else {
+            auxiliaresIndustriaContent.style.display = "block";
+            noChartMessage.style.display = "none";
+
+            const ctx = auxiliaresIndustriaContent.getContext("2d");
+            const nomesAuxiliares = Object.values(tarefasTotal).map(
+               (auxiliar) => auxiliar.nome
+            );
+            const dadosTarefasTotal = Object.values(tarefasTotal).map(
+               (auxiliar) => auxiliar.count
+            );
+            const dadosTarefasConcluidas = Object.values(tarefasConcluidas);
+
+            // Configuração dos dados do gráfico
+            const chartData = {
+               labels: nomesAuxiliares,
+               datasets: [
+                  {
+                     label: "Total de Tarefas",
+                     data: dadosTarefasTotal,
+                     backgroundColor: "lightgray",
+                  },
+                  {
+                     label: "Tarefas Concluídas",
+                     data: dadosTarefasConcluidas,
+                     backgroundColor: "green",
+                  },
+               ],
+            };
+
+            // Criação do gráfico
+            window.auxiliaresChartInstance = new Chart(ctx, {
+               type: "bar",
+               data: chartData,
+               options: {
+                  responsive: true,
+                  indexAxis: "y",
+                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  elements: { bar: { barThickness: 20 } },
+                  plugins: {
+                     legend: {
+                        position: "top",
+                        labels: { font: { size: 14, weight: "bold" } },
+                     },
+                     tooltip: {
+                        callbacks: {
+                           label: function (tooltipItem) {
+                              const datasetLabel = tooltipItem.dataset.label;
+                              const taskCount = tooltipItem.raw;
+                              return datasetLabel === "Total de Tarefas"
+                                 ? `Total de Tarefas: ${taskCount}`
+                                 : `Tarefas Concluídas: ${taskCount}`;
+                           },
+                        },
+                     },
+                  },
+               },
+            });
+         }
+      } else {
+         console.error("Dados de tarefas dos auxiliares inválidos:", resultado);
+      }
+   } catch (error) {
+      console.error(
+         "Erro ao preencher gráfico de tarefas dos auxiliares:",
+         error
+      );
+   }
+}
+
+// Função para o gráfico das tarefas dos analistas do setor no segmento "Indústria"
+async function preencherGraficoTarefasAnalistasIndustria() {
+   const tarefasConcluidas = {};
+   const tarefasTotal = {};
+
+   try {
+      const resultado = await window.electronAPI.obterTarefasAnalistasIndustria(
+         userId
+      );
+      console.log(
+         "Resultado do servidor (tarefas analistas indústria):",
+         resultado
+      );
+
+      if (resultado.success && Array.isArray(resultado.tarefas)) {
+         // Filtra as tarefas pelo setor e segmento "Indústria"
+         const tarefasIndustria = resultado.tarefas.filter(
+            (tarefa) => tarefa.segmento === "Indústria"
+         );
+         console.log(
+            "Tarefas filtradas (segmento Indústria):",
+            tarefasIndustria
+         );
+
+         if (tarefasIndustria.length === 0) {
+            console.log("Nenhuma tarefa encontrada com segmento 'Indústria'.");
+         }
+
+         tarefasIndustria.forEach((tarefa) => {
+            const responsavel = tarefa.responsavel;
+            const responsavelId = responsavel.id;
+            const nomeResponsavelFormatado = formatarNome(responsavel);
+
+            // Inicializa contadores para cada analista
+            if (!tarefasTotal[responsavelId]) {
+               tarefasTotal[responsavelId] = {
+                  nome: nomeResponsavelFormatado,
+                  count: 0,
+               };
+               tarefasConcluidas[responsavelId] = 0;
+            }
+
+            // Conta as tarefas totais e as concluídas por analista
+            tarefasTotal[responsavelId].count++;
+            if (tarefa.status === "Concluída") {
+               tarefasConcluidas[responsavelId]++;
+            }
+         });
+
+         console.log("Tarefas totais por analista:", tarefasTotal);
+         console.log("Tarefas concluídas por analista:", tarefasConcluidas);
+
+         const analistasIndustriaContent = document.getElementById(
+            "analistasIndustriaChart"
+         );
+         const noChartMessage = document.querySelector(".no-chart-message");
+
+         // Verifica se há tarefas para exibir
+         if (tarefasIndustria.length === 0) {
+            analistasIndustriaContent.style.display = "none";
+            noChartMessage.style.display = "block";
+            return;
+         } else {
+            analistasIndustriaContent.style.display = "block";
+            noChartMessage.style.display = "none";
+
+            const ctx = analistasIndustriaContent.getContext("2d");
+            const nomesAnalistas = Object.values(tarefasTotal).map(
+               (analista) => analista.nome
+            );
+            const dadosTarefasTotal = Object.values(tarefasTotal).map(
+               (analista) => analista.count
+            );
+            const dadosTarefasConcluidas = Object.values(tarefasConcluidas);
+
+            console.log("Nomes analistas:", nomesAnalistas);
+            console.log("Dados tarefas totais:", dadosTarefasTotal);
+            console.log("Dados tarefas concluídas:", dadosTarefasConcluidas);
+
+            // Configuração dos dados do gráfico
+            const chartData = {
+               labels: nomesAnalistas,
+               datasets: [
+                  {
+                     label: "Total de Tarefas",
+                     data: dadosTarefasTotal,
+                     backgroundColor: "lightgray",
+                  },
+                  {
+                     label: "Tarefas Concluídas",
+                     data: dadosTarefasConcluidas,
+                     backgroundColor: "green",
+                  },
+               ],
+            };
+
+            // Criação do gráfico
+            window.analistasChartInstance = new Chart(ctx, {
+               type: "bar",
+               data: chartData,
+               options: {
+                  responsive: true,
+                  indexAxis: "y",
+                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  elements: { bar: { barThickness: 20 } },
+                  plugins: {
+                     legend: {
+                        position: "top",
+                        labels: { font: { size: 14, weight: "bold" } },
+                     },
+                     tooltip: {
+                        callbacks: {
+                           label: function (tooltipItem) {
+                              const datasetLabel = tooltipItem.dataset.label;
+                              const taskCount = tooltipItem.raw;
+                              return datasetLabel === "Total de Tarefas"
+                                 ? `Total de Tarefas: ${taskCount}`
+                                 : `Tarefas Concluídas: ${taskCount}`;
+                           },
+                        },
+                     },
+                  },
+               },
+            });
+         }
+      } else {
+         console.error("Dados de tarefas dos analistas inválidos:", resultado);
+      }
+   } catch (error) {
+      console.error(
+         "Erro ao preencher gráfico de tarefas dos analistas:",
+         error
+      );
+   }
+}
+
 // Função para atualizar os gráficos user no Dashboard
 async function atualizarGraficosUser() {
    try {
@@ -1531,10 +2370,6 @@ async function atualizarGraficosAdmin() {
 
       await preencherGraficoProgresso();
 
-      await preencherGraficoTarefasEquipeDiaAtual();
-
-      await preencherGraficoTarefasEquipeMesAtual();
-
       await preencherGraficoTarefasSetorMesAtual();
 
       await preencherGraficoComercioMesAtual();
@@ -1542,6 +2377,18 @@ async function atualizarGraficosAdmin() {
       await preencherGraficoSupermercadoMesAtual();
 
       await preencherGraficoIndustriaMesAtual();
+
+      await preencherGraficoTarefasAuxiliaresComercio();
+
+      await preencherGraficoTarefasAnalistasComercio();
+
+      await preencherGraficoTarefasAuxiliaresSupermercado();
+
+      await preencherGraficoTarefasAnalistasSupermercado();
+
+      await preencherGraficoTarefasAuxiliaresIndustria();
+
+      await preencherGraficoTarefasAnalistasIndustria();
    } catch (error) {
       console.error("Erro ao atualizar gráficos:", error);
    }

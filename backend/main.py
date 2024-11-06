@@ -811,6 +811,546 @@ def obter_tarefas_setor_dia_atual(id_usuario):
         
     return response
 
+# Função para obter as tarefas da equipe de usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+def obter_tarefas_auxiliares_comercio(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor do usuário
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor_usuario = usuario[0]
+        
+        # Query para obter os usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+        query_obter_equipe_auxiliares = """
+        SELECT id, nome, cargo, segmento FROM usuarios 
+        WHERE setor = ? AND cargo = "Auxiliar" AND segmento = "Comércio";
+        """
+        cursor.execute(query_obter_equipe_auxiliares, (setor_usuario,))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Auxiliar' encontrado no setor e segmento 'Comércio'."
+            return response  
+        
+        # Dicionário com ID como chave e dados do auxiliar (nome, cargo e segmento)
+        dados_equipe_auxiliares = {usuario[0]: {"nome": usuario[1], "cargo": usuario[2], "segmento": usuario[3]} for usuario in usuarios_da_equipe}
+
+        # Gerando placeholders para a query das tarefas
+        ids_equipe_auxiliares = list(dados_equipe_auxiliares.keys())
+        placeholders = ','.join('?' * len(ids_equipe_auxiliares))
+        
+        # Query para obter as tarefas dos auxiliares no setor do usuário
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_auxiliares)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7],  # ID do responsável
+                    "nome": dados_equipe_auxiliares[tarefa[7]]["nome"],  # Nome do responsável
+                    "cargo": dados_equipe_auxiliares[tarefa[7]]["cargo"],  # Cargo do responsável
+                    "segmento": dados_equipe_auxiliares[tarefa[7]]["segmento"]  # Segmento do responsável
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+    
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas da equipe de usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+def obter_tarefas_auxiliares_supermercado(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor do usuário
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor_usuario = usuario[0]
+        
+        # Query para obter os usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+        query_obter_equipe_auxiliares = """
+        SELECT id, nome, cargo, segmento FROM usuarios 
+        WHERE setor = ? AND cargo = "Auxiliar" AND segmento = "Supermercado";
+        """
+        cursor.execute(query_obter_equipe_auxiliares, (setor_usuario,))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Auxiliar' encontrado no setor e segmento 'Supermercado'."
+            return response  
+        
+        # Dicionário com ID como chave e dados do auxiliar (nome, cargo e segmento)
+        dados_equipe_auxiliares = {usuario[0]: {"nome": usuario[1], "cargo": usuario[2], "segmento": usuario[3]} for usuario in usuarios_da_equipe}
+
+        # Gerando placeholders para a query das tarefas
+        ids_equipe_auxiliares = list(dados_equipe_auxiliares.keys())
+        placeholders = ','.join('?' * len(ids_equipe_auxiliares))
+        
+        # Query para obter as tarefas dos auxiliares no setor do usuário
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_auxiliares)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7],  # ID do responsável
+                    "nome": dados_equipe_auxiliares[tarefa[7]]["nome"],  # Nome do responsável
+                    "cargo": dados_equipe_auxiliares[tarefa[7]]["cargo"],  # Cargo do responsável
+                    "segmento": dados_equipe_auxiliares[tarefa[7]]["segmento"]  # Segmento do responsável
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+    
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas da equipe de usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+def obter_tarefas_auxiliares_industria(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor do usuário
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor_usuario = usuario[0]
+        
+        # Query para obter os usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+        query_obter_equipe_auxiliares = """
+        SELECT id, nome, cargo, segmento FROM usuarios 
+        WHERE setor = ? AND cargo = "Auxiliar" AND segmento = "Indústria";
+        """
+        cursor.execute(query_obter_equipe_auxiliares, (setor_usuario,))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Auxiliar' encontrado no setor e segmento 'Indústria'."
+            return response  
+        
+        # Dicionário com ID como chave e dados do auxiliar (nome, cargo e segmento)
+        dados_equipe_auxiliares = {usuario[0]: {"nome": usuario[1], "cargo": usuario[2], "segmento": usuario[3]} for usuario in usuarios_da_equipe}
+
+        # Gerando placeholders para a query das tarefas
+        ids_equipe_auxiliares = list(dados_equipe_auxiliares.keys())
+        placeholders = ','.join('?' * len(ids_equipe_auxiliares))
+        
+        # Query para obter as tarefas dos auxiliares no setor do usuário
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_auxiliares)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7],  # ID do responsável
+                    "nome": dados_equipe_auxiliares[tarefa[7]]["nome"],  # Nome do responsável
+                    "cargo": dados_equipe_auxiliares[tarefa[7]]["cargo"],  # Cargo do responsável
+                    "segmento": dados_equipe_auxiliares[tarefa[7]]["segmento"]  # Segmento do responsável
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+    
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas da equipe de usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+def obter_tarefas_analistas_comercio(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor do usuário
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor_usuario = usuario[0]
+        
+        # Query para obter os usuários com cargo "Analista" no mesmo setor e segmento "Comércio"
+        query_obter_equipe_analistas = """
+        SELECT id, nome, cargo, segmento FROM usuarios 
+        WHERE setor = ? AND cargo = "Analista" AND segmento = "Comércio";
+        """
+        cursor.execute(query_obter_equipe_analistas, (setor_usuario,))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Analista' encontrado no setor e segmento 'Comércio'."
+            return response  
+        
+        # Dicionário com ID como chave e dados do analista (nome, cargo e segmento)
+        dados_equipe_analistas = {usuario[0]: {"nome": usuario[1], "cargo": usuario[2], "segmento": usuario[3]} for usuario in usuarios_da_equipe}
+
+        # Gerando placeholders para a query das tarefas
+        ids_equipe_analistas = list(dados_equipe_analistas.keys())
+        placeholders = ','.join('?' * len(ids_equipe_analistas))
+        
+        # Query para obter as tarefas dos analistas no setor do usuário
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_analistas)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7],  # ID do responsável
+                    "nome": dados_equipe_analistas[tarefa[7]]["nome"],  # Nome do responsável
+                    "cargo": dados_equipe_analistas[tarefa[7]]["cargo"],  # Cargo do responsável
+                    "segmento": dados_equipe_analistas[tarefa[7]]["segmento"]  # Segmento do responsável
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+    
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas da equipe de usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+def obter_tarefas_analistas_supermercado(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor do usuário
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor_usuario = usuario[0]
+        
+        # Query para obter os usuários com cargo "Analista" no mesmo setor e segmento "Comércio"
+        query_obter_equipe_analistas = """
+        SELECT id, nome, cargo, segmento FROM usuarios 
+        WHERE setor = ? AND cargo = "Analista" AND segmento = "Supermercado";
+        """
+        cursor.execute(query_obter_equipe_analistas, (setor_usuario,))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Analista' encontrado no setor e segmento 'Supermercado'."
+            return response  
+        
+        # Dicionário com ID como chave e dados do analista (nome, cargo e segmento)
+        dados_equipe_analistas = {usuario[0]: {"nome": usuario[1], "cargo": usuario[2], "segmento": usuario[3]} for usuario in usuarios_da_equipe}
+
+        # Gerando placeholders para a query das tarefas
+        ids_equipe_analistas = list(dados_equipe_analistas.keys())
+        placeholders = ','.join('?' * len(ids_equipe_analistas))
+        
+        # Query para obter as tarefas dos analistas no setor do usuário
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_analistas)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7],  # ID do responsável
+                    "nome": dados_equipe_analistas[tarefa[7]]["nome"],  # Nome do responsável
+                    "cargo": dados_equipe_analistas[tarefa[7]]["cargo"],  # Cargo do responsável
+                    "segmento": dados_equipe_analistas[tarefa[7]]["segmento"]  # Segmento do responsável
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+    
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
+# Função para obter as tarefas da equipe de usuários com cargo "Auxiliar" no mesmo setor e segmento "Comércio"
+def obter_tarefas_analistas_industria(id_usuario):
+    response = {"success": False, "message": "Erro inesperado."}
+    connection = None
+    cursor = None
+
+    try:
+        connection = conectar_db()
+        cursor = connection.cursor()
+        
+        # Query para obter o setor do usuário
+        query_obter_usuario = "SELECT setor FROM usuarios WHERE id = ?;"
+        cursor.execute(query_obter_usuario, (id_usuario,))
+        
+        # Obter o setor do usuário
+        usuario = cursor.fetchone()
+        if not usuario:
+            response["message"] = "Usuário não encontrado."
+            return response  
+        
+        setor_usuario = usuario[0]
+        
+        # Query para obter os usuários com cargo "Analista" no mesmo setor e segmento "Comércio"
+        query_obter_equipe_analistas = """
+        SELECT id, nome, cargo, segmento FROM usuarios 
+        WHERE setor = ? AND cargo = "Analista" AND segmento = "Indústria";
+        """
+        cursor.execute(query_obter_equipe_analistas, (setor_usuario,))
+        usuarios_da_equipe = cursor.fetchall()
+        
+        if not usuarios_da_equipe:
+            response["message"] = "Nenhum usuário com cargo 'Analista' encontrado no setor e segmento 'Indústria'."
+            return response  
+        
+        # Dicionário com ID como chave e dados do analista (nome, cargo e segmento)
+        dados_equipe_analistas = {usuario[0]: {"nome": usuario[1], "cargo": usuario[2], "segmento": usuario[3]} for usuario in usuarios_da_equipe}
+
+        # Gerando placeholders para a query das tarefas
+        ids_equipe_analistas = list(dados_equipe_analistas.keys())
+        placeholders = ','.join('?' * len(ids_equipe_analistas))
+        
+        # Query para obter as tarefas dos analistas no setor do usuário
+        query_obter_tarefas = f"""
+        SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento, ut.id_usuario
+        FROM tarefas t
+        INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
+        WHERE ut.id_usuario IN ({placeholders});
+        """
+        cursor.execute(query_obter_tarefas, ids_equipe_analistas)
+        
+        # Obter todas as tarefas e formatá-las como uma lista de dicionários
+        tarefas = cursor.fetchall()
+        tarefas_list = [
+            {
+                "id": tarefa[0],
+                "titulo": tarefa[1],
+                "descricao": tarefa[2],
+                "prazo": tarefa[3],
+                "status": tarefa[4],
+                "setor": tarefa[5],
+                "segmento": tarefa[6],
+                "responsavel": {
+                    "id": tarefa[7],  # ID do responsável
+                    "nome": dados_equipe_analistas[tarefa[7]]["nome"],  # Nome do responsável
+                    "cargo": dados_equipe_analistas[tarefa[7]]["cargo"],  # Cargo do responsável
+                    "segmento": dados_equipe_analistas[tarefa[7]]["segmento"]  # Segmento do responsável
+                }
+            }
+            for tarefa in tarefas
+        ]
+        
+        response = {
+            "success": True,
+            "tarefas": tarefas_list
+        }
+    
+    except Exception as e:
+        response = {
+            "success": False,
+            "message": str(e)  
+        }
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        
+    return response
+
 # Função para verificar tarefas atrasadas
 def verificar_tarefas_atrasadas(id_usuario):
     response = {"success": False, "message": "Erro inesperado."}
@@ -970,6 +1510,30 @@ if __name__ == '__main__':
     elif sys.argv[1] == "obter_tarefas_setor_dia_atual":
         id_usuario = int(sys.argv[2])
         result = obter_tarefas_setor_dia_atual(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_auxiliares_comercio':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_auxiliares_comercio(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_auxiliares_supermercado':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_auxiliares_supermercado(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_auxiliares_industria':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_auxiliares_industria(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_analistas_comercio':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_analistas_comercio(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_analistas_supermercado':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_analistas_supermercado(id_usuario)
+        print(json.dumps(result))
+    elif sys.argv[1] == 'obter_tarefas_analistas_industria':
+        id_usuario = int(sys.argv[2])
+        result = obter_tarefas_analistas_industria(id_usuario)
         print(json.dumps(result))
     elif sys.argv[1] == 'verificar_tarefas_atrasadas':
         id_usuario = int(sys.argv[2])

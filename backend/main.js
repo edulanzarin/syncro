@@ -538,6 +538,246 @@ ipcMain.handle("obter_tarefas_setor_dia_atual", async (event, id_usuario) => {
    });
 });
 
+// Função para obter tarefas da equipe
+ipcMain.handle(
+   "obter_tarefas_auxiliares_comercio",
+   async (event, id_usuario) => {
+      return new Promise((resolve, reject) => {
+         const pythonProcess = execFile("python3", [
+            path.join(__dirname, "main.py"),
+            "obter_tarefas_auxiliares_comercio",
+            id_usuario,
+         ]);
+
+         let output = "";
+
+         pythonProcess.stdout.on("data", (data) => {
+            output += data.toString();
+            console.log(
+               "Dados recebidos do Python (obter_tarefas_auxiliares_comercio):",
+               data.toString()
+            );
+         });
+
+         pythonProcess.stderr.on("data", (data) => {
+            reject(`Erro ao obter tarefas do setor: ${data}`);
+         });
+
+         pythonProcess.on("close", (code) => {
+            if (code !== 0) {
+               return reject(`O processo Python saiu com o código: ${code}`);
+            }
+            try {
+               const result = JSON.parse(output.trim());
+               resolve(result);
+            } catch (error) {
+               reject(`Erro ao analisar a resposta: ${error}`);
+            }
+         });
+      });
+   }
+);
+
+// Função para obter tarefas da equipe
+ipcMain.handle(
+   "obter_tarefas_auxiliares_supermercado",
+   async (event, id_usuario) => {
+      return new Promise((resolve, reject) => {
+         const pythonProcess = execFile("python3", [
+            path.join(__dirname, "main.py"),
+            "obter_tarefas_auxiliares_supermercado",
+            id_usuario,
+         ]);
+
+         let output = "";
+
+         pythonProcess.stdout.on("data", (data) => {
+            output += data.toString();
+            console.log(
+               "Dados recebidos do Python (obter_tarefas_auxiliares_supermercado):",
+               data.toString()
+            );
+         });
+
+         pythonProcess.stderr.on("data", (data) => {
+            reject(`Erro ao obter tarefas do setor: ${data}`);
+         });
+
+         pythonProcess.on("close", (code) => {
+            if (code !== 0) {
+               return reject(`O processo Python saiu com o código: ${code}`);
+            }
+            try {
+               const result = JSON.parse(output.trim());
+               resolve(result);
+            } catch (error) {
+               reject(`Erro ao analisar a resposta: ${error}`);
+            }
+         });
+      });
+   }
+);
+
+// Função para obter tarefas da equipe
+ipcMain.handle(
+   "obter_tarefas_auxiliares_industria",
+   async (event, id_usuario) => {
+      return new Promise((resolve, reject) => {
+         const pythonProcess = execFile("python3", [
+            path.join(__dirname, "main.py"),
+            "obter_tarefas_auxiliares_industria",
+            id_usuario,
+         ]);
+
+         let output = "";
+
+         pythonProcess.stdout.on("data", (data) => {
+            output += data.toString();
+            console.log(
+               "Dados recebidos do Python (obter_tarefas_auxiliares_industria):",
+               data.toString()
+            );
+         });
+
+         pythonProcess.stderr.on("data", (data) => {
+            reject(`Erro ao obter tarefas do setor: ${data}`);
+         });
+
+         pythonProcess.on("close", (code) => {
+            if (code !== 0) {
+               return reject(`O processo Python saiu com o código: ${code}`);
+            }
+            try {
+               const result = JSON.parse(output.trim());
+               resolve(result);
+            } catch (error) {
+               reject(`Erro ao analisar a resposta: ${error}`);
+            }
+         });
+      });
+   }
+);
+
+// Função para obter tarefas da equipe
+ipcMain.handle(
+   "obter_tarefas_analistas_comercio",
+   async (event, id_usuario) => {
+      return new Promise((resolve, reject) => {
+         const pythonProcess = execFile("python3", [
+            path.join(__dirname, "main.py"),
+            "obter_tarefas_analistas_comercio",
+            id_usuario,
+         ]);
+
+         let output = "";
+
+         pythonProcess.stdout.on("data", (data) => {
+            output += data.toString();
+            console.log(
+               "Dados recebidos do Python (obter_tarefas_analistas_comercio):",
+               data.toString()
+            );
+         });
+
+         pythonProcess.stderr.on("data", (data) => {
+            reject(`Erro ao obter tarefas do setor: ${data}`);
+         });
+
+         pythonProcess.on("close", (code) => {
+            if (code !== 0) {
+               return reject(`O processo Python saiu com o código: ${code}`);
+            }
+            try {
+               const result = JSON.parse(output.trim());
+               resolve(result);
+            } catch (error) {
+               reject(`Erro ao analisar a resposta: ${error}`);
+            }
+         });
+      });
+   }
+);
+
+// Função para obter tarefas da equipe
+ipcMain.handle(
+   "obter_tarefas_analistas_supermercado",
+   async (event, id_usuario) => {
+      return new Promise((resolve, reject) => {
+         const pythonProcess = execFile("python3", [
+            path.join(__dirname, "main.py"),
+            "obter_tarefas_analistas_supermercado",
+            id_usuario,
+         ]);
+
+         let output = "";
+
+         pythonProcess.stdout.on("data", (data) => {
+            output += data.toString();
+            console.log(
+               "Dados recebidos do Python (obter_tarefas_analistas_supermercado):",
+               data.toString()
+            );
+         });
+
+         pythonProcess.stderr.on("data", (data) => {
+            reject(`Erro ao obter tarefas do setor: ${data}`);
+         });
+
+         pythonProcess.on("close", (code) => {
+            if (code !== 0) {
+               return reject(`O processo Python saiu com o código: ${code}`);
+            }
+            try {
+               const result = JSON.parse(output.trim());
+               resolve(result);
+            } catch (error) {
+               reject(`Erro ao analisar a resposta: ${error}`);
+            }
+         });
+      });
+   }
+);
+
+// Função para obter tarefas da equipe
+ipcMain.handle(
+   "obter_tarefas_analistas_industria",
+   async (event, id_usuario) => {
+      return new Promise((resolve, reject) => {
+         const pythonProcess = execFile("python3", [
+            path.join(__dirname, "main.py"),
+            "obter_tarefas_analistas_industria",
+            id_usuario,
+         ]);
+
+         let output = "";
+
+         pythonProcess.stdout.on("data", (data) => {
+            output += data.toString();
+            console.log(
+               "Dados recebidos do Python (obter_tarefas_analistas_industria):",
+               data.toString()
+            );
+         });
+
+         pythonProcess.stderr.on("data", (data) => {
+            reject(`Erro ao obter tarefas do setor: ${data}`);
+         });
+
+         pythonProcess.on("close", (code) => {
+            if (code !== 0) {
+               return reject(`O processo Python saiu com o código: ${code}`);
+            }
+            try {
+               const result = JSON.parse(output.trim());
+               resolve(result);
+            } catch (error) {
+               reject(`Erro ao analisar a resposta: ${error}`);
+            }
+         });
+      });
+   }
+);
+
 // Função para verificar tarefas atrasadas
 ipcMain.handle("verificar_tarefas_atrasadas", async (event, id_usuario) => {
    return new Promise((resolve, reject) => {
