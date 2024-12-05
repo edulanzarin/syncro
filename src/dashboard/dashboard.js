@@ -64,7 +64,7 @@ function createDashboard(dashboardType, data) {
          <div class="container-chart">
             <canvas class="chart" id="todayChart"></canvas>
          </div>
-         <div class="no-chart-message" style="display:none;">
+         <div class="today-no-chart-message no-message" style="display:none;">
             <p>Não há tarefas para hoje.</p>
             <img src="../images/empty.gif" alt="Sem tarefas" />
          </div>
@@ -79,7 +79,7 @@ function createDashboard(dashboardType, data) {
          <div class="container-chart">
             <canvas id="monthChart" class="chart"></canvas>
          </div>   
-         <div class="no-chart-message" style="display:none;">
+         <div class="month-no-chart-message no-message" style="display:none;">
             <p>Não há tarefas para o mês.</p>
             <img src="../images/empty.gif" alt="Sem tarefas" />
          </div>
@@ -94,7 +94,7 @@ function createDashboard(dashboardType, data) {
          <div class="container-chart">
             <canvas id="progressChart" class="chart"></canvas>
          </div>
-         <div class="no-chart-message" style="display:none;">
+         <div class="progress-no-chart-message no-message" style="display:none;">
             <p>Não há tarefas para o mês.</p>
             <img src="../images/empty.gif" alt="Sem tarefas" />
          </div>
@@ -200,7 +200,7 @@ function createDashboard(dashboardType, data) {
          <div class="container-chart">
             <canvas id="auxiliaresComercioChart" class="chart"></canvas>
          </div>
-         <div class="no-chart-message" style="display:none;">
+         <div class="aux-com-no-chart-message" style="display:none;">
             <p>Não há tarefas do setor para o mês.</p>
             <img src="../images/empty.gif" alt="Sem tarefas" />
          </div>
@@ -464,17 +464,19 @@ async function preencherGraficoTarefasDiaAtual() {
          todayChart.datasets[0].data = [pendentes, atrasadas, concluídas];
 
          const todayChartElement = document.getElementById("todayChart");
-         const noChartMessage = document.querySelector(".no-chart-message");
+         const noChartMessageToday = document.querySelector(
+            ".today-no-chart-message"
+         );
 
          // Verifica se há tarefas para exibir
          if (pendentes === 0 && atrasadas === 0 && concluídas === 0) {
             todayChartElement.style.display = "none";
-            noChartMessage.style.display = "block";
+            noChartMessageToday.style.display = "block";
 
             return;
          } else {
             todayChartElement.style.display = "block";
-            noChartMessage.style.display = "none";
+            noChartMessageToday.style.display = "none";
 
             const ctx = todayChartElement.getContext("2d");
             const chart = new Chart(ctx, {
@@ -490,6 +492,8 @@ async function preencherGraficoTarefasDiaAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
+                           color: "#b9b9b9",
                         },
                      },
                      tooltip: {
@@ -527,50 +531,67 @@ async function preencherGraficoTarefasMesAtual() {
 
    try {
       const resultado = await window.electronAPI.obterTarefasUsuario(userId);
-      console.log("resultado:", resultado);
+      console.log("Resultado obtido:", resultado);
 
-      // Verifique se o resultado é válido
       if (resultado.success && Array.isArray(resultado.tarefas)) {
          let pendentes = 0;
          let atrasadas = 0;
-         let concluídas = 0;
+         let concluidas = 0;
 
-         // Conta as tarefas em cada status
+         // Obtém o mês e ano atual
+         const dataAtual = new Date();
+         const mesAtual = dataAtual.getMonth() + 1; // Janeiro é 0
+         const anoAtual = dataAtual.getFullYear();
+         console.log(`Ano atual: ${anoAtual}, Mês atual: ${mesAtual}`);
+
+         // Conta as tarefas apenas do mês atual
          resultado.tarefas.forEach((tarefa) => {
-            if (tarefa && tarefa.status) {
-               switch (tarefa.status) {
-                  case "Pendente":
-                     pendentes++;
-                     break;
-                  case "Atrasada":
-                     atrasadas++;
-                     break;
-                  case "Concluída":
-                     concluídas++;
-                     break;
+            if (tarefa && tarefa.prazo) {
+               // Extrai ano e mês do campo prazo no formato YYYY-MM-DD
+               const [ano, mes] = tarefa.prazo.split("-").map(Number);
+
+               console.log(
+                  `Tarefa prazo: ${tarefa.prazo}, Ano: ${ano}, Mês: ${mes}`
+               );
+
+               if (ano === anoAtual && mes === mesAtual) {
+                  switch (tarefa.status) {
+                     case "Pendente":
+                        pendentes++;
+                        break;
+                     case "Atrasada":
+                        atrasadas++;
+                        break;
+                     case "Concluída":
+                        concluidas++;
+                        break;
+                  }
                }
             }
          });
 
-         // Atualiza os dados do gráfico com os contadores
-         monthChart.datasets[0].data = [pendentes, atrasadas, concluídas];
+         console.log(
+            `Contadores - Pendentes: ${pendentes}, Atrasadas: ${atrasadas}, Concluídas: ${concluidas}`
+         );
+
+         // Atualiza os dados do gráfico
+         monthChart.datasets[0].data = [pendentes, atrasadas, concluidas];
 
          const monthChartElement = document.getElementById("monthChart");
          const noChartMessage = document.querySelector(
-            ".month-content .no-chart-message"
+            ".month-content .month-no-chart-message"
          );
 
          // Verifica se há tarefas para exibir
-         if (pendentes === 0 && atrasadas === 0 && concluídas === 0) {
+         if (pendentes === 0 && atrasadas === 0 && concluidas === 0) {
             monthChartElement.style.display = "none";
             noChartMessage.style.display = "block";
-            return;
          } else {
             monthChartElement.style.display = "block";
             noChartMessage.style.display = "none";
 
             const ctx = monthChartElement.getContext("2d");
-            const chart = new Chart(ctx, {
+            new Chart(ctx, {
                type: "doughnut",
                data: monthChart,
                options: {
@@ -583,6 +604,7 @@ async function preencherGraficoTarefasMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "#b9b9b9",
                         },
                      },
                      tooltip: {
@@ -624,26 +646,37 @@ async function preencherGraficoProgresso() {
 
       if (resultado.success && Array.isArray(resultado.tarefas)) {
          let totalTarefas = 0;
-         let concluídas = 0;
+         let concluidas = 0;
 
+         // Data atual para comparar mês e ano
+         const dataAtual = new Date();
+         const mesAtual = dataAtual.getMonth() + 1; // Janeiro é 0, então +1
+         const anoAtual = dataAtual.getFullYear();
+
+         // Filtra e contabiliza tarefas do mês atual
          resultado.tarefas.forEach((tarefa) => {
-            if (tarefa && tarefa.status) {
-               totalTarefas++;
-               if (tarefa.status === "Concluída") {
-                  concluídas++;
+            if (tarefa && tarefa.prazo && tarefa.status) {
+               const [ano, mes] = tarefa.prazo.split("-").map(Number);
+
+               // Considerar apenas tarefas do mês atual
+               if (ano === anoAtual && mes === mesAtual) {
+                  totalTarefas++;
+                  if (tarefa.status === "Concluída") {
+                     concluidas++;
+                  }
                }
             }
          });
 
          // Calcula as não concluídas
-         const naoConcluidas = totalTarefas - concluídas;
+         const naoConcluidas = totalTarefas - concluidas;
 
          // Atualiza os dados do gráfico
-         progressChart.datasets[0].data = [concluídas, naoConcluidas];
+         progressChart.datasets[0].data = [concluidas, naoConcluidas];
 
          const progressChartElement = document.getElementById("progressChart");
          const noChartMessage = document.querySelector(
-            ".progress-content .no-chart-message"
+            ".progress-content .progress-no-chart-message"
          );
 
          // Verifica se o gráfico e a mensagem existem
@@ -669,6 +702,7 @@ async function preencherGraficoProgresso() {
                                  size: 14,
                                  weight: "bold",
                               },
+                              color: "#b9b9b9",
                            },
                         },
                         tooltip: {
@@ -780,6 +814,7 @@ async function preencherGraficoTarefasEquipeDiaAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
                         },
                      },
                      tooltip: {
@@ -820,33 +855,46 @@ async function preencherGraficoTarefasEquipeMesAtual() {
 
    try {
       const resultado = await window.electronAPI.obterTarefasEquipe(userId);
-      console.log("resultado equipe:", resultado);
+      console.log("Resultado obtido para equipe:", resultado);
 
-      // Verifique se o resultado é válido
       if (resultado.success && Array.isArray(resultado.tarefas)) {
          let pendentes = 0;
          let atrasadas = 0;
-         let concluídas = 0;
+         let concluidas = 0;
 
-         // Conta as tarefas em cada status
+         // Obtém o mês e ano atual
+         const dataAtual = new Date();
+         const mesAtual = dataAtual.getMonth() + 1; // Janeiro é 0
+         const anoAtual = dataAtual.getFullYear();
+
+         // Conta as tarefas da equipe apenas do mês atual
          resultado.tarefas.forEach((tarefa) => {
-            if (tarefa && tarefa.status) {
-               switch (tarefa.status) {
-                  case "Pendente":
-                     pendentes++;
-                     break;
-                  case "Atrasada":
-                     atrasadas++;
-                     break;
-                  case "Concluída":
-                     concluídas++;
-                     break;
+            if (tarefa && tarefa.prazo) {
+               // Extrai ano e mês do campo prazo no formato YYYY-MM-DD
+               const [ano, mes] = tarefa.prazo.split("-").map(Number);
+
+               if (ano === anoAtual && mes === mesAtual) {
+                  switch (tarefa.status) {
+                     case "Pendente":
+                        pendentes++;
+                        break;
+                     case "Atrasada":
+                        atrasadas++;
+                        break;
+                     case "Concluída":
+                        concluidas++;
+                        break;
+                  }
                }
             }
          });
 
-         // Atualiza os dados do gráfico com os contadores
-         monthTeamChart.datasets[0].data = [pendentes, atrasadas, concluídas];
+         console.log(
+            `Contadores da equipe - Pendentes: ${pendentes}, Atrasadas: ${atrasadas}, Concluídas: ${concluidas}`
+         );
+
+         // Atualiza os dados do gráfico
+         monthTeamChart.datasets[0].data = [pendentes, atrasadas, concluidas];
 
          const monthTeamChartElement =
             document.getElementById("monthTeamChart");
@@ -855,16 +903,15 @@ async function preencherGraficoTarefasEquipeMesAtual() {
          );
 
          // Verifica se há tarefas para exibir
-         if (pendentes === 0 && atrasadas === 0 && concluídas === 0) {
+         if (pendentes === 0 && atrasadas === 0 && concluidas === 0) {
             monthTeamChartElement.style.display = "none";
             noChartMessage.style.display = "block";
-            return;
          } else {
             monthTeamChartElement.style.display = "block";
             noChartMessage.style.display = "none";
 
             const ctx = monthTeamChartElement.getContext("2d");
-            const chart = new Chart(ctx, {
+            new Chart(ctx, {
                type: "doughnut",
                data: monthTeamChart,
                options: {
@@ -877,6 +924,7 @@ async function preencherGraficoTarefasEquipeMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "#b9b9b9",
                         },
                      },
                      tooltip: {
@@ -913,24 +961,26 @@ function formatarNome(responsavel) {
    return primeiroNome;
 }
 
-// Função para o gráfico das tarefas dos auxiliares (todos os auxiliares)
+// Frontend ajustado
 async function preencherGraficoTarefasAuxiliaresMesAtual() {
    const tarefasConcluidas = {};
    const tarefasTotal = {};
 
    try {
+      // Obtém as tarefas filtradas pelo backend
       const resultado = await window.electronAPI.obterTarefasAuxiliaresEquipe(
          userId
       );
-      console.log("resultado auxiliares:", resultado);
+
+      console.log("Resultado das tarefas dos auxiliares:", resultado);
 
       if (resultado.success && Array.isArray(resultado.tarefas)) {
          resultado.tarefas.forEach((tarefa) => {
             const responsavel = tarefa.responsavel;
             const responsavelId = responsavel.id;
-            const nomeResponsavelFormatado = formatarNome(responsavel); // Formata o nome
+            const nomeResponsavelFormatado = formatarNome(responsavel);
 
-            // Inicializa contadores para cada auxiliar usando o ID como chave
+            // Inicializa contadores para cada auxiliar
             if (!tarefasTotal[responsavelId]) {
                tarefasTotal[responsavelId] = {
                   nome: nomeResponsavelFormatado,
@@ -939,7 +989,7 @@ async function preencherGraficoTarefasAuxiliaresMesAtual() {
                tarefasConcluidas[responsavelId] = 0;
             }
 
-            // Conta as tarefas totais e as concluídas por auxiliar
+            // Contabiliza tarefas totais e concluídas
             tarefasTotal[responsavelId].count++;
             if (tarefa.status === "Concluída") {
                tarefasConcluidas[responsavelId]++;
@@ -1021,6 +1071,7 @@ async function preencherGraficoTarefasAuxiliaresMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
                         },
                      },
                      tooltip: {
@@ -1055,21 +1106,21 @@ async function preencherGraficoTarefasAnalistasMesAtual() {
    const tarefasTotal = {};
 
    try {
+      // Obtém as tarefas dos analistas
       const resultado = await window.electronAPI.obterTarefasAnalistasEquipe(
          userId
       );
-      console.log("resultado analistas:", resultado);
+      console.log("Resultado tarefas analistas:", resultado);
 
-      // Verifica se o resultado é válido
       if (resultado.success && Array.isArray(resultado.tarefas)) {
          resultado.tarefas.forEach((tarefa) => {
             if (tarefa && tarefa.responsavel) {
                const responsavelId = tarefa.responsavel.id;
                const nomeResponsavelFormatado = formatarNome(
                   tarefa.responsavel
-               ); // Formata o nome
+               );
 
-               // Usa o ID do responsável como chave para garantir que nomes iguais não sejam misturados
+               // Inicializa os contadores para cada analista
                if (!tarefasTotal[responsavelId]) {
                   tarefasTotal[responsavelId] = {
                      nome: nomeResponsavelFormatado,
@@ -1078,10 +1129,20 @@ async function preencherGraficoTarefasAnalistasMesAtual() {
                   tarefasConcluidas[responsavelId] = 0;
                }
 
-               // Incrementa o total de tarefas e as concluídas para cada analista
-               tarefasTotal[responsavelId].count++;
-               if (tarefa.status === "Concluída") {
-                  tarefasConcluidas[responsavelId]++;
+               // Verifica se a tarefa está no mês atual
+               const dataTarefa = new Date(tarefa.prazo);
+               const mesAtual = new Date().getMonth(); // Obtém o mês atual
+               const anoAtual = new Date().getFullYear(); // Obtém o ano atual
+
+               if (
+                  dataTarefa.getMonth() === mesAtual &&
+                  dataTarefa.getFullYear() === anoAtual
+               ) {
+                  // Incrementa o total de tarefas e as concluídas para cada analista
+                  tarefasTotal[responsavelId].count++;
+                  if (tarefa.status === "Concluída") {
+                     tarefasConcluidas[responsavelId]++;
+                  }
                }
             }
          });
@@ -1160,6 +1221,7 @@ async function preencherGraficoTarefasAnalistasMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
                         },
                      },
                      tooltip: {
@@ -1260,6 +1322,7 @@ async function preencherGraficoTarefasSetorMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
                         },
                      },
                      tooltip: {
@@ -1357,6 +1420,7 @@ async function preencherGraficoComercioMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
                         },
                      },
                      tooltip: {
@@ -1455,6 +1519,7 @@ async function preencherGraficoSupermercadoMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
                         },
                      },
                      tooltip: {
@@ -1560,6 +1625,7 @@ async function preencherGraficoIndustriaMesAtual() {
                               size: 14,
                               weight: "bold",
                            },
+                           color: "white",
                         },
                      },
                      tooltip: {
@@ -1598,22 +1664,15 @@ async function preencherGraficoTarefasAuxiliaresComercio() {
       );
 
       if (resultado.success && Array.isArray(resultado.tarefas)) {
-         // Filtra as tarefas pelo setor e segmento "Comércio"
          const tarefasComercio = resultado.tarefas.filter(
             (tarefa) => tarefa.segmento === "Comércio"
          );
-         console.log("Tarefas filtradas (segmento Comércio):", tarefasComercio);
-
-         if (tarefasComercio.length === 0) {
-            console.log("Nenhuma tarefa encontrada com segmento 'Comércio'.");
-         }
 
          tarefasComercio.forEach((tarefa) => {
             const responsavel = tarefa.responsavel;
             const responsavelId = responsavel.id;
             const nomeResponsavelFormatado = formatarNome(responsavel);
 
-            // Inicializa contadores para cada auxiliar
             if (!tarefasTotal[responsavelId]) {
                tarefasTotal[responsavelId] = {
                   nome: nomeResponsavelFormatado,
@@ -1622,22 +1681,19 @@ async function preencherGraficoTarefasAuxiliaresComercio() {
                tarefasConcluidas[responsavelId] = 0;
             }
 
-            // Conta as tarefas totais e as concluídas por auxiliar
             tarefasTotal[responsavelId].count++;
             if (tarefa.status === "Concluída") {
                tarefasConcluidas[responsavelId]++;
             }
          });
 
-         console.log("Tarefas totais por auxiliar:", tarefasTotal);
-         console.log("Tarefas concluídas por auxiliar:", tarefasConcluidas);
-
          const auxiliaresComercioContent = document.getElementById(
             "auxiliaresComercioChart"
          );
-         const noChartMessage = document.querySelector(".no-chart-message");
+         const noChartMessage = document.querySelector(
+            ".aux-com-no-chart-message"
+         );
 
-         // Verifica se há tarefas para exibir
          if (tarefasComercio.length === 0) {
             auxiliaresComercioContent.style.display = "none";
             noChartMessage.style.display = "block";
@@ -1655,11 +1711,6 @@ async function preencherGraficoTarefasAuxiliaresComercio() {
             );
             const dadosTarefasConcluidas = Object.values(tarefasConcluidas);
 
-            console.log("Nomes auxiliares:", nomesAuxiliares);
-            console.log("Dados tarefas totais:", dadosTarefasTotal);
-            console.log("Dados tarefas concluídas:", dadosTarefasConcluidas);
-
-            // Configuração dos dados do gráfico
             const chartData = {
                labels: nomesAuxiliares,
                datasets: [
@@ -1676,19 +1727,37 @@ async function preencherGraficoTarefasAuxiliaresComercio() {
                ],
             };
 
-            // Criação do gráfico
             window.auxiliaresChartInstance = new Chart(ctx, {
                type: "bar",
                data: chartData,
                options: {
                   responsive: true,
                   indexAxis: "y",
-                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  scales: {
+                     x: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo X
+                        },
+                     },
+                     y: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo Y
+                        },
+                     },
+                  },
                   elements: { bar: { barThickness: 20 } },
                   plugins: {
                      legend: {
                         position: "top",
-                        labels: { font: { size: 14, weight: "bold" } },
+                        labels: {
+                           color: "white", // Define a cor das legendas
+                           font: {
+                              size: 14,
+                              weight: "bold",
+                           },
+                        },
                      },
                      tooltip: {
                         callbacks: {
@@ -1803,12 +1872,31 @@ async function preencherGraficoTarefasAnalistasComercio() {
                options: {
                   responsive: true,
                   indexAxis: "y",
-                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  scales: {
+                     x: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo X
+                        },
+                     },
+                     y: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo Y
+                        },
+                     },
+                  },
                   elements: { bar: { barThickness: 20 } },
                   plugins: {
                      legend: {
                         position: "top",
-                        labels: { font: { size: 14, weight: "bold" } },
+                        labels: {
+                           color: "white", // Define a cor das legendas
+                           font: {
+                              size: 14,
+                              weight: "bold",
+                           },
+                        },
                      },
                      tooltip: {
                         callbacks: {
@@ -1922,12 +2010,31 @@ async function preencherGraficoTarefasAuxiliaresSupermercado() {
                options: {
                   responsive: true,
                   indexAxis: "y",
-                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  scales: {
+                     x: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo X
+                        },
+                     },
+                     y: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo Y
+                        },
+                     },
+                  },
                   elements: { bar: { barThickness: 20 } },
                   plugins: {
                      legend: {
                         position: "top",
-                        labels: { font: { size: 14, weight: "bold" } },
+                        labels: {
+                           color: "white", // Define a cor das legendas
+                           font: {
+                              size: 14,
+                              weight: "bold",
+                           },
+                        },
                      },
                      tooltip: {
                         callbacks: {
@@ -2041,12 +2148,31 @@ async function preencherGraficoTarefasAnalistasSupermercado() {
                options: {
                   responsive: true,
                   indexAxis: "y",
-                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  scales: {
+                     x: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo X
+                        },
+                     },
+                     y: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo Y
+                        },
+                     },
+                  },
                   elements: { bar: { barThickness: 20 } },
                   plugins: {
                      legend: {
                         position: "top",
-                        labels: { font: { size: 14, weight: "bold" } },
+                        labels: {
+                           color: "white", // Define a cor das legendas
+                           font: {
+                              size: 14,
+                              weight: "bold",
+                           },
+                        },
                      },
                      tooltip: {
                         callbacks: {
@@ -2158,12 +2284,31 @@ async function preencherGraficoTarefasAuxiliaresIndustria() {
                options: {
                   responsive: true,
                   indexAxis: "y",
-                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  scales: {
+                     x: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo X
+                        },
+                     },
+                     y: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo Y
+                        },
+                     },
+                  },
                   elements: { bar: { barThickness: 20 } },
                   plugins: {
                      legend: {
                         position: "top",
-                        labels: { font: { size: 14, weight: "bold" } },
+                        labels: {
+                           color: "white", // Define a cor das legendas
+                           font: {
+                              size: 14,
+                              weight: "bold",
+                           },
+                        },
                      },
                      tooltip: {
                         callbacks: {
@@ -2294,12 +2439,31 @@ async function preencherGraficoTarefasAnalistasIndustria() {
                options: {
                   responsive: true,
                   indexAxis: "y",
-                  scales: { x: { stacked: false }, y: { stacked: false } },
+                  scales: {
+                     x: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo X
+                        },
+                     },
+                     y: {
+                        stacked: false,
+                        ticks: {
+                           color: "white", // Define a cor dos rótulos no eixo Y
+                        },
+                     },
+                  },
                   elements: { bar: { barThickness: 20 } },
                   plugins: {
                      legend: {
                         position: "top",
-                        labels: { font: { size: 14, weight: "bold" } },
+                        labels: {
+                           color: "white", // Define a cor das legendas
+                           font: {
+                              size: 14,
+                              weight: "bold",
+                           },
+                        },
                      },
                      tooltip: {
                         callbacks: {

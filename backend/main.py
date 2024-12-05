@@ -280,26 +280,31 @@ def obter_tarefas_usuario(id_usuario):
     
     return result
 
-# Função para obter as tarefas de um usuário com prazo para o dia atual ou atrasadas
+from datetime import datetime
+
 def obter_tarefas_usuario_dia_atual(id_usuario):
     try:
         connection = conectar_db()
         cursor = connection.cursor()
         
-        # Data atual no formato AAAA-MM-DD
+        # Data e mês atual no formato AAAA-MM-DD e AAAA-MM
         data_atual = datetime.now().strftime('%Y-%m-%d')
+        mes_atual = datetime.now().strftime('%Y-%m')
         
-        # Query para obter as tarefas do usuário com prazo para o dia atual
+        # Query para obter as tarefas do usuário com prazo para o dia atual ou atrasadas do mês atual
         query_obter_tarefas = """
             SELECT t.id, t.titulo, t.descricao, t.prazo, t.status, t.setor, t.segmento
             FROM tarefas t
             INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
             WHERE ut.id_usuario = ?
-            AND (t.prazo = ? OR (t.prazo < ? AND t.status = 'Atrasada'));
+            AND (
+                t.prazo = ? OR
+                (t.prazo < ? AND strftime('%Y-%m', t.prazo) = ? AND t.status = 'Atrasada')
+            );
         """
         
-        # Executar a consulta com o id_usuario e a data atual
-        cursor.execute(query_obter_tarefas, (id_usuario, data_atual, data_atual))
+        # Executar a consulta com o id_usuario, data atual e mês atual
+        cursor.execute(query_obter_tarefas, (id_usuario, data_atual, data_atual, mes_atual))
         
         # Obter todas as tarefas e formatá-las como uma lista de dicionários
         tarefas = cursor.fetchall()
@@ -421,8 +426,9 @@ def obter_tarefas_equipe_dia_atual(id_usuario):
         connection = conectar_db()
         cursor = connection.cursor()
 
-        # Data atual no formato AAAA-MM-DD
+        # Data e mês atual no formato AAAA-MM-DD e AAAA-MM
         data_atual = datetime.now().strftime('%Y-%m-%d')
+        mes_atual = datetime.now().strftime('%Y-%m')
 
         # Query para obter o setor e segmento do usuário
         query_obter_usuario = "SELECT setor, segmento FROM usuarios WHERE id = ?;"
@@ -456,11 +462,14 @@ def obter_tarefas_equipe_dia_atual(id_usuario):
         FROM tarefas t
         INNER JOIN usuarios_tarefas ut ON ut.id_tarefa = t.id
         WHERE ut.id_usuario IN ({placeholders})
-        AND (t.prazo = ? OR (t.prazo < ? AND t.status = 'Atrasada'));
+        AND (
+            t.prazo = ? OR
+            (t.prazo < ? AND strftime('%Y-%m', t.prazo) = ? AND t.status = 'Atrasada')
+        );
         """
         
-        # Executar a consulta com os IDs da equipe e a data atual
-        cursor.execute(query_obter_tarefas, (*ids_equipe, data_atual, data_atual))
+        # Executar a consulta com os IDs da equipe, a data atual e o mês atual
+        cursor.execute(query_obter_tarefas, (*ids_equipe, data_atual, data_atual, mes_atual))
 
         # Obter todas as tarefas e formatá-las como uma lista de dicionários
         tarefas = cursor.fetchall()

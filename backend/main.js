@@ -10,12 +10,15 @@ function createWindow() {
    mainWindow = new BrowserWindow({
       width: 800,
       height: 600,
+      transparent: true, // Janela transparente
+      backgroundColor: "#00000000", // Fundo completamente transparente
       icon: path.join(__dirname, "../src/images/logo.png"),
       webPreferences: {
          preload: path.join(__dirname, "preload.js"),
          contextIsolation: true,
          enableRemoteModule: false,
          nodeIntegration: false,
+         enableBlinkFeatures: "CSSBackdropFilter",
       },
       autoHideMenuBar: true,
    });
@@ -23,7 +26,8 @@ function createWindow() {
    mainWindow.maximize();
 }
 
-// Evento quando a aplicação está pronta
+app.commandLine.appendSwitch("enable-blur-behind");
+
 app.on("ready", createWindow);
 
 // Função para executar uma consulta SQL personalizada
